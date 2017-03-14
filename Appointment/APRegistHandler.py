@@ -25,6 +25,7 @@ class APregistHandler(BaseHandler):  # 报名约拍
         ufunc = Ufuncs()
         if ufunc.judge_user_valid(u_id, u_auth_key):  # 用户认证成功
             if ap_type == '10271':  # 报名约拍
+                ap_message = self.get_argument('message')
                 try:
                     ap_user = self.db.query(User).filter(User.Uauthkey == u_auth_key).one()
                     ap_user_id = ap_user.Uid
@@ -50,6 +51,7 @@ class APregistHandler(BaseHandler):  # 报名约拍
                             AEregisterID=ap_user_id,
                             AEvalid=1,
                             AEchoosed=0,
+                            AEmessage=ap_message,
                         )
                         try:
                             appointment.APregistN += 1

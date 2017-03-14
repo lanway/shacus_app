@@ -126,7 +126,8 @@ class Ufuncs(object):
         users = []
         for userid in userids:
             try:
-                register = get_db().query(AppointEntry.AEchoosed, AppointEntry.AEregisterID, AppointEntry.AEapid). \
+                register = get_db().query(AppointEntry.AEchoosed, AppointEntry.AEregisterID, AppointEntry.AEapid,
+                                          AppointEntry.AEmessage). \
                     filter(AppointEntry.AEapid == appointmentid, AppointEntry.AEregisterID == userid).one()
                 user = get_db().query(User.Uid, User.Ualais, User.Usign).filter(User.Uid == userid).one()
                 new_user = dict(
@@ -134,7 +135,8 @@ class Ufuncs(object):
                     ualais=user.Ualais,
                     uimage=Ufuncs.get_user_headimage_intent_from_userid(user.Uid),
                     usign=user.Usign,
-                    uchoosed=int(register.AEchoosed)
+                    uchoosed=int(register.AEchoosed),
+                    umessage=register.AEmessage,
                 )
                 print '插入新用户'
                 users.append(new_user)

@@ -44,15 +44,15 @@ class APgroupHandler(object):
     @staticmethod
     def Group():
         retdata = []
-        apdata1 = {'type': '1', 'name' : '写真客片'}
+        apdata1 = {'type': '1', 'name': '写真客片', 'description' : '写真哦', }
         retdata.append(apdata1)
-        apdata2 = {'type': '2', 'name': '记录随拍'}
+        apdata2 = {'type': '2', 'name': '记录随拍', 'description' : '随便拍拍'}
         retdata.append(apdata2)
-        apdata3 = {'type': '3', 'name': '练手互免'}
+        apdata3 = {'type': '3', 'name': '练手互免', 'description' : '相互学习一个'}
         retdata.append(apdata3)
-        apdata4 = {'type': '4', 'name': '活动跟拍'}
+        apdata4 = {'type': '4', 'name': '活动跟拍', 'description' : 'simple跟拍'}
         retdata.append(apdata4)
-        apdata5 = {'type': '5', 'name': '商业跟拍'}
+        apdata5 = {'type': '5', 'name': '商业跟拍', 'description' : 'naive专业跟拍'}
         retdata.append(apdata5)
 
         return retdata

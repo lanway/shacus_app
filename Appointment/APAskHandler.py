@@ -91,6 +91,40 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             print e
             self.no_result_found(e)
 
+    def refresh_group_list(self, type, offset_apid, u_id, group):
+        retdata = []
+        try:
+            #attention:因为返回新的
+            appointments = self.db.query(Appointment). \
+                filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                       Appointment.APstatus != 2,Appointment.APgroup == group ,
+                       Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
+                limit(6).all()
+            if appointments:
+                APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                self.retjson['code'] = '10253'  # 刷新成功，返回6个
+                self.retjson['contents'] = retdata
+            else:
+                print appointments.first().APtype
+        except Exception, e:  # 剩余约拍不足6个，返回剩余全部约拍
+            print e
+            try:
+                appointments = self.db.query(Appointment). \
+                    filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                           Appointment.APstatus != 2, Appointment.APgroup == group,
+                           Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
+                    all()
+                if appointments:
+                    APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                    self.retjson['code'] = '10263'  # 剩余约拍不足6个，返回剩余全部约拍
+                    self.retjson['contents'] = retdata
+                else:
+                    self.retjson['code'] = '10262'
+                    self.retjson['contents'] = r"没有更多约拍"
+            except Exception, e:
+                self.retjson['code'] = '10262'
+                self.retjson['contents'] = r"没有更多约拍"
+
     def post(self):
         u_auth_key = self.get_argument('authkey')
         request_type = self.get_argument('type')
@@ -154,11 +188,13 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     print e
                     self.no_result_found(e)
             elif request_type == '10243':  # 刷新并拿到指定Id后的6个摄影师约拍
+                ap_group = self.get_argument('group')
                 offset_apid = self.get_argument('offsetapid')
-                self.refresh_list(1, offset_apid, u_id)
+                self.refresh_group_list(1, offset_apid, u_id,ap_group)
             elif request_type == '10244':  # 刷新并拿到指定Id后的6个模特约拍
+                ap_group = self.get_argument('group')
                 offset_apid = self.get_argument('offsetapid')
-                self.refresh_list(0, offset_apid,  u_id)
+                self.refresh_group_list(0, offset_apid,  u_id, ap_group)
             elif request_type == '10245':  # 返回报名某约拍的全部用户列表
                 ap_id = self.get_argument('apid')
                 try:
@@ -175,7 +211,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                             self.retjson['contents'] = registers
                         except Exception, e:
                             print e
-                            self.retjson['code'] = ''
+                            self.retjson['code'] = '10257'
                             self.retjson['contents'] = u'读写错误'
 
                 except Exception, e:
