@@ -9,6 +9,7 @@ from ctypes import cast
 from sqlalchemy import desc
 from sqlalchemy.sql.elements import or_
 
+
 import Userinfo
 from APmodel import APmodelHandler
 from Appointment.APgroupHandler import APgroupHandler
@@ -132,7 +133,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
         request_type = self.get_argument('type')
         u_id = self.get_argument('uid')
         ap_group = self.get_argument('group')
-        groupid = ap_group
+        groupid = int(ap_group)
         ufuncs = Userinfo.Ufuncs.Ufuncs()
         if ufuncs.judge_user_valid(u_id, u_auth_key):
 
