@@ -6,6 +6,7 @@
 import json
 
 from sqlalchemy import desc
+from sqlalchemy import or_
 
 import Userinfo
 from APmodel import APmodelHandler
@@ -130,14 +131,14 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
         request_type = self.get_argument('type')
         u_id = self.get_argument('uid')
         ap_group = self.get_argument('group')
-        groupid = ap_group
+        groupid = int(ap_group)
         ufuncs = Userinfo.Ufuncs.Ufuncs()
         if ufuncs.judge_user_valid(u_id, u_auth_key):
 
             if request_type == '10231':  # 请求所有设定地点的摄影师发布的约拍中未关闭的6
                 retdata = []
                 try:
-                    if ap_group/10 != 0:
+                    if groupid/10 != 0:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
                                    Appointment.APstatus != 2, Appointment.APgroup == groupid).\
@@ -148,7 +149,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     else:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                   Appointment.APstatus != 2, (Appointment.APgroup/10 == groupid or Appointment.APgroup%10 == groupid)). \
+                                   Appointment.APstatus != 2, or_(Appointment.APgroup%10 == groupid,Appointment.APgroup/10 == groupid)). \
                             order_by(desc(Appointment.APid)).limit(6).all()
                         APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                         self.retjson['code'] = '10251'
@@ -159,7 +160,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             elif request_type == '10235':  # 请求所有设定地点的模特发布的约拍中未关闭的
                 retdata = []
                 try:
-                    if ap_group / 10 != 0:
+                    if groupid / 10 != 0:
                             appointments = self.db.query(Appointment). \
                                 filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
                                        Appointment.APstatus != 2 , Appointment.APgroup == groupid).\
