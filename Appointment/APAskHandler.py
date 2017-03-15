@@ -137,28 +137,47 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             if request_type == '10231':  # 请求所有设定地点的摄影师发布的约拍中未关闭的6
                 retdata = []
                 try:
-                    appointments = self.db.query(Appointment). \
-                        filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                               Appointment.APstatus != 2, Appointment.APgroup == groupid).\
-                        order_by(desc(Appointment.APid)).limit(6).all()
-                    APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
-                    self.retjson['code'] = '10251'
-                    self.retjson['contents'] = retdata
+                    if ap_group/10 != 0:
+                        appointments = self.db.query(Appointment). \
+                            filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                                   Appointment.APstatus != 2, Appointment.APgroup == groupid).\
+                            order_by(desc(Appointment.APid)).limit(6).all()
+                        APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                        self.retjson['code'] = '10251'
+                        self.retjson['contents'] = retdata
+                    else:
+                        appointments = self.db.query(Appointment). \
+                            filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                                   Appointment.APstatus != 2, (Appointment.APgroup/10 == groupid or Appointment.APgroup%10 == groupid)). \
+                            order_by(desc(Appointment.APid)).limit(6).all()
+                        APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                        self.retjson['code'] = '10251'
+                        self.retjson['contents'] = retdata
                 except Exception, e: # 没有找到约拍
                     print e
                     self.no_result_found(e)
             elif request_type == '10235':  # 请求所有设定地点的模特发布的约拍中未关闭的
                 retdata = []
                 try:
-                    appointments = self.db.query(Appointment). \
-                        filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                               Appointment.APstatus != 2 , Appointment.APgroup == groupid).\
-                    order_by(desc(Appointment.APid)).limit(6).all()
-                    APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
-                    self.retjson['code'] = '10252'
-                    self.retjson['contents'] = retdata
+                    if ap_group / 10 != 0:
+                            appointments = self.db.query(Appointment). \
+                                filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                                       Appointment.APstatus != 2 , Appointment.APgroup == groupid).\
+                            order_by(desc(Appointment.APid)).limit(6).all()
+                            APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                            self.retjson['code'] = '10252'
+                            self.retjson['contents'] = retdata
+                    else:
+                        appointments = self.db.query(Appointment). \
+                            filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                                   Appointment.APstatus != 2, (Appointment.APgroup/10 == groupid or Appointment.APgroup%10 == groupid)). \
+                            order_by(desc(Appointment.APid)).limit(6).all()
+                        APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                        self.retjson['code'] = '10252'
+                        self.retjson['contents'] = retdata
                 except Exception, e:
                     self.no_result_found(e)
+
 
             elif request_type == '10240':  # 请求自己参与（包括发布）的所有约拍
                 retdata = []
