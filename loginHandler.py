@@ -41,18 +41,23 @@ class LoginHandler(BaseHandler):
                 try:
                     user = self.db.query(User).filter(User.Utel == m_phone).one()
                     if user:  # 用户存在
+                        print '111'
                         password = user.Upassword
                         if m_password == password:  # 密码正确
+                            print '222'
                             self.get_login_model(user)
+                            print '333'
                         else:
                             self.retjson['contents'] = u'密码错误'
                             self.retjson['code'] = '10114'  # 密码错误
                     else:  # 用户不存在
+                        print '444'
                         self.retjson['contents'] = u'该用户不存在'
                         self.retjson['code'] = '10113'
                 except Exception, e:  # 还没有注册
                     print "异常："
                     print e
+                    print '555'
                     self.retjson['contents'] = u'该用户名不存在'
                     self.retjson['code'] = '10113'  # '该用户名不存在'
         elif askcode == '10105':  # 自动登录
