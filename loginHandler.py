@@ -142,16 +142,17 @@ class LoginHandler(BaseHandler):
             self.retjson['contents'] = r"摄影师约拍列表导入失败！"
 
     def get_new_login_model(self, user):
+        models = []
         retdata = []
         user_model = Usermodel.get_user_detail_from_user(user)  # 用户模型
         try:
-            my_likes = self.db.query(UserLike).filter(UserLike.ULlikeid == user.Uid,UserLike.ULvalid == 1).all()
+            my_likes = self.db.query(UserLike).filter(UserLike.ULlikeid == user.Uid, UserLike.ULvalid == 1).all()
             for like in my_likes:
                 pic = self.db.query(UserCollection).filter(UserCollection.UCuser == like.ULlikedid,
                                                            UserCollection.UCvalid == 1).all()
                 imghandler = UserImgHandler()
                 for item in pic:
-                    retdata.append(imghandler.UC_login_model(item,like.ULlikedid))
+                    retdata.append(imghandler.UC_login_model(item, item.UCuser))
 
             # 约拍类型和id
             data = dict(
@@ -161,9 +162,9 @@ class LoginHandler(BaseHandler):
                 groupList=APgroupHandler.Group(),
             )
 
-            retdata.append(data)
+            models.append(data)
             self.retjson['code'] = '10111'
-            self.retjson['contents'] = retdata
+            self.retjson['contents'] = models
         except Exception, e:
             print e
             self.retjson['contents'] = r"摄影师约拍列表导入失败！"
