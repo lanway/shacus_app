@@ -51,7 +51,7 @@ class FindUlike(BaseHandler):
             self.retjson['contents'] = '用户不合法'
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))  # 在当前目录下生成retjson文件输出中文
 
-
+    @staticmethod
     def find_my_like(self, uid):
         '''
         查询所有我关注的人

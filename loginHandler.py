@@ -12,9 +12,10 @@ from tornado.web import asynchronous
 
 from Appointment.APgroupHandler import APgroupHandler
 from BaseHandlerh import BaseHandler
-from Database.tables import Appointment, User
+from Database.tables import Appointment, User, UserCollection, UserLike
 from Userinfo import Usermodel
 from Userinfo.Ufuncs import Ufuncs
+from Userinfo.UserImgHandler import UserImgHandler
 from Userinfo.Usermodel import Model_daohanglan
 
 class LoginHandler(BaseHandler):
@@ -45,7 +46,7 @@ class LoginHandler(BaseHandler):
                         password = user.Upassword
                         if m_password == password:  # 密码正确
                             print '222'
-                            self.get_login_model(user)
+                            self.get_new_login_model(user)
                             print '333'
                         else:
                             self.retjson['contents'] = u'密码错误'
@@ -68,7 +69,7 @@ class LoginHandler(BaseHandler):
                 u_auth_key = user.Uauthkey
                 if auth_key == u_auth_key:
                     self.retjson['code'] = '10111'
-                    self.get_login_model(user)
+                    self.get_new_login_model(user)
                 else:
                     self.retjson['code'] = '10116'
                     self.retjson['contents'] = u'授权码不正确或已过期'
@@ -130,6 +131,33 @@ class LoginHandler(BaseHandler):
                 daohanglan=self.bannerinit(),
                 photoList=photo_list,
                 modelList=model_list,
+                groupList=APgroupHandler.Group(),
+            )
+
+            retdata.append(data)
+            self.retjson['code'] = '10111'
+            self.retjson['contents'] = retdata
+        except Exception, e:
+            print e
+            self.retjson['contents'] = r"摄影师约拍列表导入失败！"
+
+    def get_new_login_model(self, user):
+        retdata = []
+        user_model = Usermodel.get_user_detail_from_user(user)  # 用户模型
+        try:
+            my_likes = self.db.query(UserLike).filter(UserLike.ULlikeid == user.Uid,UserLike.ULvalid == 1).all()
+            for like in my_likes:
+                pic = self.db.query(UserCollection).filter(UserCollection.UCuser == like.ULlikedid,
+                                                           UserCollection.UCvalid == 1).all()
+                imghandler = UserImgHandler()
+                for item in pic:
+                    retdata.append(imghandler.UC_login_model(item,like.ULlikedid))
+
+            # 约拍类型和id
+            data = dict(
+                userModel=user_model,
+                daohanglan=self.bannerinit(),
+                CollectionList=retdata,
                 groupList=APgroupHandler.Group(),
             )
 

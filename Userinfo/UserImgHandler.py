@@ -2,7 +2,7 @@
 import time
 import urllib2
 from Database.models import get_db
-from Database.tables import User, UserHomepageimg, Image, UserCollection, UserCollectionimg
+from Database.tables import User, UserHomepageimg, Image, UserCollection, UserCollectionimg, UClike, UserImage
 from FileHandler.Upload import AuthKeyHandler
 
 
@@ -268,4 +268,77 @@ class UserImgHandler(object):
             img_tokens = []
         return img_tokens
 
+    # 登录页作品集模型
+    '''
+    单个作品集列表的信息包括昵称 头像 性别 年龄 发布时间 图片总数 前三张图片的略缩形式 点赞人列表（包括头像略缩图和id）
+    '''
+    def UC_login_model(self,UCsample,uid):  # UCsample是一个UserCollection对象
+        authkeyhandler = AuthKeyHandler()
+        imgsimple = []
+        ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
+                                                         UserCollectionimg.UCIvalid == 1).limit(3).all()
+        ucimgnum = get_db().query(UserCollection).filter(UserCollectionimg.UCIuser == UCsample.UCid,
+                                                         UserCollectionimg.UCIvalid == 1).all()
+        try:
+            userimg = get_db().query(UserImage).filter(UserImage.UIuid == uid).one()
+            userheadimg = authkeyhandler.download_url(userimg.UIurl)
+        except Exception, e:
+            userheadimg = ''
+            print e
+        # 获取图片数
+        num = 0
+        for item in ucimgnum:
+            num += 1
 
+        # 获取三张缩略图
+        for item in ucimg:
+            ucimgurl = item.UCIurl
+            # img.append(authkeyhandler.download_originpic_url(ucimgurl))   # 大图url
+            img_info = dict(
+                imageUrl=authkeyhandler.download_abb_url(ucimgurl),
+                width=item.UCIwidth/6,
+                height=item.UCIheight/6,
+            )
+            imgsimple.append(img_info)
+
+        # 获取点赞人列表 包括:id 和 头像
+        UserList = []
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
+        for item in uclikepeople:
+            newid = item.UClikeUserid
+            userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).one()
+            UClikeModel = dict(
+                userid=newid,
+                userheadimg=authkeyhandler.download_url(userimg.UIurl)
+            )
+            UserList.append(UClikeModel)
+        try:
+            usermodel = get_db().query(User).filter(User.Uid==uid).one()
+            ret_uc = dict(
+                UCid=UCsample.UCid,
+                UCuser=uid,
+                UCusername=usermodel.Ualais,
+                UCusergender=usermodel.Usex,
+                UCcreateT=UCsample.UCcreateT.strftime('%Y-%m-%d'),
+                UCtitle=UCsample.UCtitle,
+                UCcontent=UCsample.UCcontent,
+                UCsimpleimg=imgsimple,  # 缩略图url
+                UCpicnum=num,  # 作品集图片数
+                UserHeadimg=userheadimg,  # 发布作者的头像
+            )
+            return ret_uc
+        except Exception, e:
+            usermodel = 'cannot find usermodel'
+            print e
+            ret_uc = dict(
+                UCid=UCsample.UCid,
+                UCuser=uid,
+                UCmodel = usermodel,
+                UCcreateT=UCsample.UCcreateT.strftime('%Y-%m-%d'),
+                UCtitle=UCsample.UCtitle,
+                UCcontent=UCsample.UCcontent,
+                UCsimpleimg=imgsimple,      # 缩略图url
+                UCpicnum=num,             # 作品集图片数
+                UserHeadimg=userheadimg,  # 发布作者的头像
+            )
+            return ret_uc
