@@ -326,6 +326,7 @@ class UserImgHandler(object):
                 UCsimpleimg=imgsimple,  # 缩略图url
                 UCpicnum=num,  # 作品集图片数
                 UserHeadimg=userheadimg,  # 发布作者的头像
+                UserlikeList=UserList,
             )
             return ret_uc
         except Exception, e:
