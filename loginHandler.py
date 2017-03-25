@@ -153,7 +153,9 @@ class LoginHandler(BaseHandler):
                 imghandler = UserImgHandler()
                 for item in pic:
                     retdata.append(imghandler.UC_login_model(item, item.UCuser))
-
+            # 推荐作品集
+            RecommendUC = []
+            
             # 约拍类型和id
             data = dict(
                 userModel=user_model,

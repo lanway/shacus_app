@@ -313,13 +313,21 @@ class UserImgHandler(object):
                 userheadimg=authkeyhandler.download_url(userimg.UIurl)
             )
             UserList.append(UClikeModel)
+
+
         try:
             usermodel = get_db().query(User).filter(User.Uid==uid).one()
+            # 转换boolean到int
+            gender = 0
+            if usermodel.Usex == True:
+                gender = 1
+            elif usermodel.Usex == False:
+                gender = 0
             ret_uc = dict(
                 UCid=UCsample.UCid,
                 UCuser=uid,
                 UCusername=usermodel.Ualais,
-                UCusergender=usermodel.Usex,
+                UCusergender=gender,
                 UCcreateT=UCsample.UCcreateT.strftime('%Y-%m-%d'),
                 UCtitle=UCsample.UCtitle,
                 UCcontent=UCsample.UCcontent,
