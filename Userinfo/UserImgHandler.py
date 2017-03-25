@@ -292,13 +292,15 @@ class UserImgHandler(object):
             userpublish = dict(
                 UserHeadimg=userheadimg,
                 UserGender=UserPublishModel.Usex,
-                UserId=uid
+                UserId=uid,
+                UserAge=0,
             )
         except Exception, e:
             userpublish = dict(
                 UserHeadimg='查找头像失败',
                 UserGender='查找头像失败',
                 UserId=uid,
+                UserAge='',
             )
             print e
         # 获取图片数
