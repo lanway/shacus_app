@@ -144,23 +144,22 @@ class LoginHandler(BaseHandler):
     def get_new_login_model(self, user):
         models = []
         retdata = []
+        imghandler = UserImgHandler()
         user_model = Usermodel.get_user_detail_from_user(user)  # 用户模型
         try:
             my_likes = self.db.query(UserLike).filter(UserLike.ULlikeid == user.Uid, UserLike.ULvalid == 1).all()
             for like in my_likes:
                 pic = self.db.query(UserCollection).filter(UserCollection.UCuser == like.ULlikedid,
                                                            UserCollection.UCvalid == 1).all()
-                imghandler = UserImgHandler()
                 for item in pic:
                     retdata.append(imghandler.UC_login_model(item, item.UCuser))
             # 推荐作品集
-            RecommendUC = []
-            
             # 约拍类型和id
             data = dict(
                 userModel=user_model,
                 daohanglan=self.bannerinit(),
-                CollectionList=retdata,
+                CollectionList=retdata,         # 好友作品集
+                RecList=[],                     # 推荐作品集
                 groupList=APgroupHandler.Group(),
             )
 

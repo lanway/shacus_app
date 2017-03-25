@@ -276,6 +276,12 @@ class UserImgHandler(object):
     def UC_login_model(self,UCsample,uid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         imgsimple = []
+        # 获取发布人的model
+        try:
+            UserPublishModel = get_db().query(User).filter(User.Uid == uid).one()
+        except Exception, e:
+            UserPublishModel = ''
+            print e
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).limit(3).all()
         ucimgnum = get_db().query(UserCollection).filter(UserCollectionimg.UCIuser == UCsample.UCid,
@@ -283,8 +289,17 @@ class UserImgHandler(object):
         try:
             userimg = get_db().query(UserImage).filter(UserImage.UIuid == uid).one()
             userheadimg = authkeyhandler.download_url(userimg.UIurl)
+            userpublish = dict(
+                UserHeadimg=userheadimg,
+                UserGender=UserPublishModel.Usex,
+                UserId=uid
+            )
         except Exception, e:
-            userheadimg = ''
+            userpublish = dict(
+                UserHeadimg='查找头像失败',
+                UserGender='查找头像失败',
+                UserId=uid,
+            )
             print e
         # 获取图片数
         num = 0
@@ -333,7 +348,7 @@ class UserImgHandler(object):
                 UCcontent=UCsample.UCcontent,
                 UCsimpleimg=imgsimple,  # 缩略图url
                 UCpicnum=num,  # 作品集图片数
-                UserHeadimg=userheadimg,  # 发布作者的头像
+                UserPublish=userpublish,
                 UserlikeList=UserList,
             )
             return ret_uc
@@ -349,6 +364,7 @@ class UserImgHandler(object):
                 UCcontent=UCsample.UCcontent,
                 UCsimpleimg=imgsimple,      # 缩略图url
                 UCpicnum=num,             # 作品集图片数
-                UserHeadimg=userheadimg,  # 发布作者的头像
+                UserHeadimg=userpublish,  # 发布作者的头像
             )
             return ret_uc
+
