@@ -293,7 +293,7 @@ class UserImgHandler(object):
                 UserHeadimg=userheadimg,
                 UserGender=UserPublishModel.Usex,
                 UserId=uid,
-                UserAge=0,
+                UserAge=UserPublishModel.Uage,
             )
         except Exception, e:
             userpublish = dict(
