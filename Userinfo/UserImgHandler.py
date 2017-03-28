@@ -1,8 +1,9 @@
 #-*- coding:utf-8 -*-
+# 用户作品集常用函数
 import time
 import urllib2
 from Database.models import get_db
-from Database.tables import User, UserHomepageimg, Image, UserCollection, UserCollectionimg, UClike, UserImage
+from Database.tables import User, UserHomepageimg, Image, UserCollection, UserCollectionimg, UClike, UserImage, UserLike
 from FileHandler.Upload import AuthKeyHandler
 
 
@@ -71,7 +72,6 @@ class UserImgHandler(object):
                         print e
         except Exception, e:
             print e
-
 
     def insert(self,list):
         '''
@@ -148,7 +148,7 @@ class UserImgHandler(object):
 
 
     # 得到个人照片大图
-    def UHpicget(self,uid):
+    def UHpicget(self, uid):
         img_tokens = []
         authkeyhandler = AuthKeyHandler()
         imgs = get_db().query(UserHomepageimg).filter(UserHomepageimg.UHuser == uid, UserHomepageimg.UHpicvalid == 1).all()  # 返回所有图片项
@@ -163,7 +163,7 @@ class UserImgHandler(object):
         return img_tokens
 
     # 得到个人照片缩略图
-    def UHpicgetassign(self,uid):
+    def UHpicgetassign(self, uid):
         img_tokens = []
         authkeyhandler = AuthKeyHandler()
         imgs = get_db().query(UserHomepageimg).filter(UserHomepageimg.UHuser == uid, UserHomepageimg.UHpicvalid == 1).all()  # 返回所有图片项
@@ -182,8 +182,8 @@ class UserImgHandler(object):
             img_tokens = []
         return img_tokens
 
-    # b->c作品集详细信息(包括缩略图url和大图url)
-    def UCmodel(self,UCsample,uid):  # UCsample是一个UserCollection对象
+    # b->c作品集详细信息(包括缩略图url和大图url)   2017-3-28固定不用再改
+    def UCmodel(self, UCsample,uid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         img = []
         imgsimple = []
@@ -209,9 +209,9 @@ class UserImgHandler(object):
         return ret_uc
 
     # a->b:作品集列表:某个列表封面的获取
-    def UC_simple_model(self,UCsample,uid):
+    def UC_simple_model(self, UCsample, uid):
         authkeyhandler = AuthKeyHandler()
-        # ucsample是一个UserCollection实例
+        # ucsample 是一个UserCollection实例
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).all()
         if ucimg:
@@ -228,7 +228,7 @@ class UserImgHandler(object):
         ret_uc = dict(
             UCid=UCsample.UCid,
             UCcreateT=UCsample.UCcreateT.strftime('%Y-%m-%d'),
-            UCtitle = UCsample.UCtitle,
+            UCtitle=UCsample.UCtitle,
             UCimg=img_info,
         )
         return ret_uc
@@ -256,7 +256,7 @@ class UserImgHandler(object):
         return ret_uc
 
     # 个人主页照片集缩略图(缩略图是正方形)
-    def UHgetsquarepic(self,uid):
+    def UHgetsquarepic(self, uid):
         img_tokens = []
         authkeyhandler = AuthKeyHandler()
         imgs = get_db().query(UserHomepageimg).filter(UserHomepageimg.UHuser == uid , UserHomepageimg.UHpicvalid == 1).all()  # 返回所有图片项
@@ -269,31 +269,37 @@ class UserImgHandler(object):
             img_tokens = []
         return img_tokens
 
-    # 登录页作品集模型
     '''
-    单个作品集列表的信息包括昵称 头像 性别 年龄 发布时间 图片总数 前三张图片的略缩形式 点赞人列表（包括头像略缩图和id）
+    这是作品集列表中------单条信息的返回 包括发布人的Model 上面的UC_simple_model暂时先不用
     '''
-    def UC_login_model(self,UCsample,uid):  # UCsample是一个UserCollection对象
+    def UC_login_model(self,UCsample, uid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
-        imgsimple = []
-        # 获取发布人的model
+        # UserPublishModel:获取作品集发布人的model
         try:
             UserPublishModel = get_db().query(User).filter(User.Uid == uid).one()
         except Exception, e:
             UserPublishModel = ''
             print e
+        # 单个作品集中前三张的图片(作为缩略图下载)  和所有图片(计算作品集图片个数)
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).limit(3).all()
-        ucimgnum = get_db().query(UserCollection).filter(UserCollectionimg.UCIuser == UCsample.UCid,
+        ucimgnum = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).all()
+
         try:
-            userimg = get_db().query(UserImage).filter(UserImage.UIuid == uid).one()
-            userheadimg = authkeyhandler.download_url(userimg.UIurl)
-            userpublish = dict(
-                UserHeadimg=userheadimg,
-                UserGender=UserPublishModel.Usex,
-                UserId=uid,
-                UserAge=UserPublishModel.Uage,
+            userimg = get_db().query(UserImage).filter(UserImage.UIuid == uid).one()  # 用户头像
+            gender = 0
+            if UserPublishModel.Usex == True:
+                gender = 1
+            elif UserPublishModel.Usex == False:
+                gender = 0
+            userheadimg = authkeyhandler.download_url(userimg.UIurl)   # 用户头像Url
+            userpublish = dict(                                        # 发布人的Model
+                UserHeadimg=userheadimg,                               # 头像
+                UserName=UserPublishModel.Ualais,                      # 发布的用户名字
+                UserGender=gender,                                     # 性别
+                UserId=uid,                                            # 用户id
+                UserAge=UserPublishModel.Uage,                         # 用户年龄
             )
         except Exception, e:
             userpublish = dict(
@@ -303,55 +309,70 @@ class UserImgHandler(object):
                 UserAge='',
             )
             print e
-        # 获取图片数
-        num = 0
-        for item in ucimgnum:
-            num += 1
+
+        print '作品集列表用户模型获取成功'
+        # 获取图片数(如果有图片)
+        if ucimgnum:
+            num = 0
+            for item in ucimgnum:
+                num += 1
+        else:
+            num = 0
 
         # 获取三张缩略图
-        for item in ucimg:
-            ucimgurl = item.UCIurl
-            # img.append(authkeyhandler.download_originpic_url(ucimgurl))   # 大图url
+        imgsimple = []
+        if ucimg:
+            for item in ucimg:
+                ucimgurl = item.UCIurl
+                img_info = dict(
+                    imageUrl=authkeyhandler.download_abb_url(ucimgurl),
+                    width=item.UCIwidth/6,
+                    height=item.UCIheight/6,
+                )
+                imgsimple.append(img_info)
+        else:
             img_info = dict(
-                imageUrl=authkeyhandler.download_abb_url(ucimgurl),
-                width=item.UCIwidth/6,
-                height=item.UCIheight/6,
+                imageUrl='暂无图片',
             )
             imgsimple.append(img_info)
-
-        # 获取点赞人列表 包括:id 和 头像
+        # 获取点赞人列表(只发三个) 包括:id 和 头像
         UserList = []
-        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
-        for item in uclikepeople:
-            newid = item.UClikeUserid
-            userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).one()
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).limit(3).all()
+        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
+        if uclikepeople:
+            for item in uclikepeople:
+                newid = item.UClikeUserid
+                userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).one()
+                UClikeModel = dict(
+                    userid=newid,
+                    userheadimg=authkeyhandler.download_url(userimg.UIurl)
+                )
+                UserList.append(UClikeModel)
+        else:
             UClikeModel = dict(
-                userid=newid,
-                userheadimg=authkeyhandler.download_url(userimg.UIurl)
+                userid='还没有人点过赞',
+                userheadimg=''
             )
             UserList.append(UClikeModel)
-
+        UClikeNum = 0   # 计算作品集点赞人数
+        if uclikepeoplenum:
+            for item in uclikepeoplenum:
+                UClikeNum += 1
+        else:
+            UClikeNum = 0
 
         try:
-            usermodel = get_db().query(User).filter(User.Uid==uid).one()
-            # 转换boolean到int
-            gender = 0
-            if usermodel.Usex == True:
-                gender = 1
-            elif usermodel.Usex == False:
-                gender = 0
             ret_uc = dict(
                 UCid=UCsample.UCid,
-                UCuser=uid,
-                UCusername=usermodel.Ualais,
-                UCusergender=gender,
                 UCcreateT=UCsample.UCcreateT.strftime('%Y-%m-%d'),
                 UCtitle=UCsample.UCtitle,
                 UCcontent=UCsample.UCcontent,
-                UCsimpleimg=imgsimple,  # 缩略图url
-                UCpicnum=num,  # 作品集图片数
-                UserPublish=userpublish,
-                UserlikeList=UserList,
+                UCsimpleimg=imgsimple,                                   # 缩略图url
+                UCpicnum=num,                                            # 作品集图片数
+                UserPublish=userpublish,                                 # 发布人Model
+                UserlikeList=UserList,                                   # 点赞人列表
+                UserlikeNum=UClikeNum,                                   # 点赞数
+                UserIsFriend=1,                                          # 这个作品集是不是好友推荐
             )
             return ret_uc
         except Exception, e:
@@ -369,4 +390,22 @@ class UserImgHandler(object):
                 UserHeadimg=userpublish,  # 发布作者的头像
             )
             return ret_uc
+
+    # 2是否为1的好友？
+    @staticmethod
+    def isfriend(u1id, u2id):
+        listofone = get_db().query(UserLike).filter(UserLike.ULlikeid == u1id, UserLike.ULvalid == 1).all()
+        for item in listofone:
+            if item.ULlikedid == u2id:
+                return 1
+        return 0
+
+    def friendlist(self,uid):
+        friendlist = []
+        list = get_db().query(UserLike).filter(UserLike.ULlikeid == uid, UserLike.ULvalid == 1).all()
+        for item in list:
+            friend = get_db().query(User).filter(User.Uid == item.ULlikedid).one()
+            friendlist.append(friend.Uid)
+        return friendlist
+
 

@@ -2,9 +2,12 @@
 # 个人主页图片：包括个人照片和作品集
 import json
 import threading
+
+from sqlalchemy import desc
+
 from BaseHandlerh import BaseHandler
 from Database.models import get_db
-from Database.tables import User, UserHomepageimg, UserCollection
+from Database.tables import User, UserHomepageimg, UserCollection, UserLike
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.UserImgHandler import UserImgHandler
 
@@ -21,9 +24,9 @@ class Userhpimg(BaseHandler):
             imgs = self.get_argument('imgs')
             auth_key = self.get_argument('authkey')
             try:
-                userid = self.db.query(User).filter(User.Uid==u_id).one()
+                userid = self.db.query(User).filter(User.Uid == u_id).one()
                 key = userid.Uauthkey
-                if key== auth_key:  #验证通过
+                if key == auth_key:  #验证通过
                     print '验证通过'
                     ap_imgs_json = json.loads(imgs)
                     retjson_body = {'auth_key': '', 'uid': ''}
@@ -347,10 +350,10 @@ class Userhpimg(BaseHandler):
                 print '进入作品集列表获取'
                 try:
                     for item in pic:
-                        retdata.append(imghandler.UC_simple_model(item,u_id))
+                        retdata.append(imghandler.UC_login_model(item,u_id))
                     retjson['code'] = '10818'
                     retjson['contents'] = retdata
-                except Exception ,e:
+                except Exception, e:
                     print e
             except Exception, e:
                 print e
@@ -404,5 +407,69 @@ class Userhpimg(BaseHandler):
             except Exception, e:
                 print e
                 retjson['contents'] = '用户认证失败'
+
+        # 获取作品集列表:好友
+        elif type == '10830':
+            retjson = {'code': '10831', 'contents': ''}
+            retdata = []
+            auth_key = self.get_argument("authkey")
+            try:
+                userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()          # 用户本身
+                imghandler = UserImgHandler()
+                friendlist = imghandler.friendlist(userid.Uid)
+                print '进入作品集列表获取'
+                print userid.Uid
+                print friendlist
+                try:
+                    UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(friendlist), UserCollection.UCvalid == 1).\
+                        order_by(desc(UserCollection.UCid)).limit(6).all()
+                    for item in UserCollecions:
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                    retjson['code'] = '10830'
+                    retjson['contents'] = retdata
+                except Exception, e:
+                    print e
+                    retjson['contents'] = '获取作品集列表失败'
+            except Exception, e:
+                print e
+                retjson['contents'] = '用户认证失败'
+
+        # 刷新好友作品集
+        elif type == '10832':
+                print '请求更多好友作品集'
+                retjson = {'code': '10833', 'contents': ''}
+                retdata = []
+                auth_key = self.get_argument("authkey")
+                lastucid = self.get_argument('index')
+                try:
+                    userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()  # 用户本身
+                    imghandler = UserImgHandler()
+                    friendlist = imghandler.friendlist(userid.Uid)
+                    print '进入作品集列表获取'
+                    print userid.Uid
+                    print friendlist
+                    try:
+                        UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(friendlist),
+                                                                              UserCollection.UCvalid == 1,
+                                                                              UserCollection.UCid < lastucid). \
+                            order_by(desc(UserCollection.UCid)).limit(6).all()
+                        for item in UserCollecions:
+                            retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                        retjson['code'] = '10832'
+                        retjson['contents'] = retdata
+                    except Exception, e:
+                        print e
+                        retjson['contents'] = '获取作品集列表失败'
+                except Exception, e:
+                    print e
+                    retjson['contents'] = '用户认证失败'
+
+        # 获取推荐作品集
+        elif type == '10834':
+            retjson = {'code': '10833', 'contents': ''}
+            retdata = []
+            auth_key = self.get_argument("authkey")
+        # 刷新推荐作品集
         self.write(json.dumps(retjson, ensure_ascii=False, indent=2))
+
 

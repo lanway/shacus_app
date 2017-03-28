@@ -1,5 +1,5 @@
 # coding=utf-8
-# 个人主页图片：包括个人照片和作品集
+# 用户作品集模型
 import json
 import threading
 from BaseHandlerh import BaseHandler
@@ -68,7 +68,7 @@ class UserCollectionHandler(BaseHandler):
                     except Exception, e:
                         print e
                         self.retjson['code'] = '10843'
-                        self.retjson['contents'] = '未找到此作品集'
+                        self.retjson['content'] = '未找到此作品集'
                 else:
                     print'认证错误'
                     self.retjson['code'] = '10813'
