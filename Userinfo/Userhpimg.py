@@ -466,10 +466,53 @@ class Userhpimg(BaseHandler):
 
         # 获取推荐作品集
         elif type == '10834':
-            retjson = {'code': '10833', 'contents': ''}
+            retjson = {'code': '10835', 'contents': ''}
             retdata = []
             auth_key = self.get_argument("authkey")
+            try:
+                userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()  # 用户本身
+                imghandler = UserImgHandler()
+                reclist = imghandler.reclist(userid.Uid)
+                try:
+                    UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(reclist),
+                                                                          UserCollection.UCvalid == 1). \
+                        order_by(desc(UserCollection.UCid)).limit(6).all()
+                    for item in UserCollecions:
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                    retjson['code'] = '10834'
+                    retjson['contents'] = retdata
+                except Exception, e:
+                    print e
+                    retjson['contents'] = '获取作品集列表失败'
+            except Exception, e:
+                print e
         # 刷新推荐作品集
+        elif type == '10836':
+            retjson ={'code':'10837', 'contents':''}
+            retdata = []
+            auth_key = self.get_argument("authkey")
+            lastucid = self.get_argument('index')
+            try:
+                userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()  # 用户本身
+                imghandler = UserImgHandler()
+                reclist = imghandler.reclist(userid.Uid)
+                print '进入作品集列表获取'
+                try:
+                    UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(reclist),
+                                                                          UserCollection.UCvalid == 1,
+                                                                          UserCollection.UCid < lastucid). \
+                        order_by(desc(UserCollection.UCid)).limit(6).all()
+                    for item in UserCollecions:
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                    retjson['code'] = '10836'
+                    retjson['contents'] = retdata
+                except Exception, e:
+                    print e
+                    retjson['contents'] = '获取作品集列表失败'
+            except Exception, e:
+                print e
+                retjson['contents'] = '用户认证失败'
+
         self.write(json.dumps(retjson, ensure_ascii=False, indent=2))
 
 

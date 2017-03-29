@@ -73,7 +73,7 @@ def get_user_detail_from_user(user):
         nickName=user.Ualais,
         realName=user.Uname,
         sign=user.Usign,
-        sex=user.Usex,
+        sex=gender,
         score=user.Uscore,
         location=user.Ulocation,
         birthday=user.Ubirthday.strftime('%Y-%m-%d %H:%M:%S'),
