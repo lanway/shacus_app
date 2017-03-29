@@ -67,6 +67,10 @@ def get_user_detail_from_user(user):
     # except Exception, e:
     #     print e
     #     Ubirthday = ''
+    if user.Usex == True:
+        gender = 1
+    else:
+        gender = 0
     user_model = dict(
         id=user.Uid,
         phone=user.Utel,
