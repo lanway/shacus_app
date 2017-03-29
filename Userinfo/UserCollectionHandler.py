@@ -16,7 +16,6 @@ class UserCollectionHandler(BaseHandler):
 
         # 作品集点赞/取消赞
         if type == '10840'or type == '10841':
-            User_id = self.get_argument('uid')
             UC_id = self.get_argument('ucid')
             authkey = self.get_argument('authkey')
             try:
@@ -25,7 +24,7 @@ class UserCollectionHandler(BaseHandler):
                     try:
                         User_Collection = self.db.query(UserCollection).filter(UserCollection.UCid == UC_id).one()
                         try:
-                            once_liked = self.db.query(UClike).filter(UClike.UClikeUserid == User_id,
+                            once_liked = self.db.query(UClike).filter(UClike.UClikeUserid == userid.Uid,
                                                                       UClike.UClikeid == UC_id).one()
                             if once_liked:   # 找到了对应的作品集
                                 if once_liked.UCLvalid == 1:
@@ -59,7 +58,7 @@ class UserCollectionHandler(BaseHandler):
                                 new_UClike = UClike(
                                     UClikeid=UC_id,
                                     UCLvalid=1,
-                                    UClikeUserid=User_id,
+                                    UClikeUserid=userid.Uid,
                                 )
                                 User_Collection.UClikeNum += 1
                                 self.db.merge(new_UClike)
