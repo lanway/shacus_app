@@ -431,5 +431,5 @@ class UserImgHandler(object):
                     continue
         return reclist
 
-f = UserImgHandler()
-print f.reclist(116)
+# f = UserImgHandler()
+# print f.reclist(116)

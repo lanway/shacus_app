@@ -10,7 +10,7 @@ from Userinfo.UserImgHandler import UserImgHandler
 
 
 class UserCollectionHandler(BaseHandler):
-    retjson = {'code': '', 'content': ""}
+    retjson = {'code': '', 'contents': ""}
     def post(self):
         type = self.get_argument('type')
 
@@ -25,18 +25,19 @@ class UserCollectionHandler(BaseHandler):
                     try:
                         User_Collection = self.db.query(UserCollection).filter(UserCollection.UCid == UC_id).one()
                         try:
-                            once_liked = self.db.query(UClike).filter(UClike.UClikeUserid == User_id , UClike.UClikeid == UC_id).one()
+                            once_liked = self.db.query(UClike).filter(UClike.UClikeUserid == User_id,
+                                                                      UClike.UClikeid == UC_id).one()
                             if once_liked:   # 找到了对应的作品集
                                 if once_liked.UCLvalid == 1:
                                     if type == '10840':  # 对作品集进行点赞
                                         self.retjson['code'] = '10842'
-                                        self.retjson['content'] = r'已点过赞'
+                                        self.retjson['contents'] = r'已点过赞'
                                     elif type == '10841':  # 取消赞
                                         once_liked.UCLvalid = 0
                                         User_Collection.UClikeNum -= 1
                                         self.db.commit()
                                         self.retjson['code'] = '10842'
-                                        self.retjson['content'] = r'取消赞成功'
+                                        self.retjson['contents'] = r'取消赞成功'
 
                                 else:  # 点过赞但是取消了once_liked.UCLvalid == 0
                                     if type == '10840':
@@ -44,16 +45,16 @@ class UserCollectionHandler(BaseHandler):
                                         User_Collection.UClikeNum += 1
                                         self.db.commit()
                                         self.retjson['code'] = '10842'
-                                        self.retjson['content'] = '点赞成功'
+                                        self.retjson['contents'] = '点赞成功'
                                     elif type == '10841':
                                         self.retjson['code'] = '10842'
-                                        self.retjson['content'] = r'用户已取消赞！'
+                                        self.retjson['contents'] = r'用户已取消赞！'
                         # 没有找到类似点赞记录
                         except Exception, e:
                             print 'new like for a collection'
                             if type == '10841':
                                 self.retjson['code'] = '10842'
-                                self.retjson['content'] = r'用户未赞过此约拍！'
+                                self.retjson['contents'] = r'用户未赞过此约拍！'
                             elif type == '10840':
                                 new_UClike = UClike(
                                     UClikeid=UC_id,
@@ -64,11 +65,11 @@ class UserCollectionHandler(BaseHandler):
                                 self.db.merge(new_UClike)
                                 self.db.commit()
                                 self.retjson['code'] = '10842'
-                                self.retjson['content'] = '点赞成功'
+                                self.retjson['contents'] = '点赞成功'
                     except Exception, e:
                         print e
                         self.retjson['code'] = '10843'
-                        self.retjson['content'] = '未找到此作品集'
+                        self.retjson['contents'] = '未找到此作品集'
                 else:
                     print'认证错误'
                     self.retjson['code'] = '10813'
@@ -97,19 +98,19 @@ class UserCollectionHandler(BaseHandler):
                         self.db.merge(new_UCcomment)
                         self.db.commit()
                         self.retjson['code'] = '10844'
-                        self.retjson['content'] = '评论成功'
+                        self.retjson['contents'] = '评论成功'
                     except Exception, e:
                         print e
                         self.retjson['code'] = '10845'
-                        self.retjson['content'] = '未找到此作品集'
+                        self.retjson['contents'] = '未找到此作品集'
                 else:
                     print'认证错误'
                     self.retjson['code'] = '10845'
-                    self.retjson['content'] = '用户认证错误'
+                    self.retjson['contents'] = '用户认证错误'
             except Exception, e:
                 print e
                 self.retjson['code'] = '10845'
-                self.retjson['content'] = '未找到该用户'
+                self.retjson['contents'] = '未找到该用户'
 
 
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
