@@ -2,6 +2,9 @@
 # 用户作品集常用函数
 import time
 import urllib2
+
+from sqlalchemy import desc
+
 from Database.models import get_db
 from Database.tables import User, UserHomepageimg, Image, UserCollection, UserCollectionimg, UClike, UserImage, UserLike
 from FileHandler.Upload import AuthKeyHandler
@@ -287,7 +290,8 @@ class UserImgHandler(object):
                                                          UserCollectionimg.UCIvalid == 1).all()
 
         try:
-            userimg = get_db().query(UserImage).filter(UserImage.UIuid == uid).one()  # 用户头像
+            userimgs = get_db().query(UserImage).filter(UserImage.UIuid == uid).order_by(desc(UserImage.UIimid)).all()  # 用户头像
+            userimg = userimgs[0]
             gender = 0
             if UserPublishModel.Usex == True:
                 gender = 1
