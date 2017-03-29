@@ -299,18 +299,18 @@ class UserImgHandler(object):
                 gender = 0
             userheadimg = authkeyhandler.download_url(userimg.UIurl)   # 用户头像Url
             userpublish = dict(                                        # 发布人的Model
-                UserHeadimg=userheadimg,                               # 头像
-                UserName=UserPublishModel.Ualais,                      # 发布的用户名字
-                UserGender=gender,                                     # 性别
-                UserId=uid,                                            # 用户id
-                UserAge=UserPublishModel.Uage,                         # 用户年龄
+                headImage=userheadimg,                               # 头像
+                nickName=UserPublishModel.Ualais,                      # 发布的用户名字
+                sex=gender,                                     # 性别
+                id=uid,                                            # 用户id
+                age=UserPublishModel.Uage,                         # 用户年龄
             )
         except Exception, e:
             userpublish = dict(
-                UserHeadimg='查找头像失败',
-                UserGender='查找头像失败',
-                UserId=uid,
-                UserAge='',
+                headImage='查找头像失败',
+                sex='查找头像失败',
+                id=uid,
+                age='',
             )
             print e
 
@@ -364,7 +364,12 @@ class UserImgHandler(object):
                 UClikeNum += 1
         else:
             UClikeNum = 0
-
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+                                             UClike.UCLvalid == 1).all()
+        if like:
+            isliked = 1
+        else:
+            isliked = 0
         try:
             ret_uc = dict(
                 UCid=UCsample.UCid,
@@ -377,6 +382,7 @@ class UserImgHandler(object):
                 UserlikeList=UserList,                                   # 点赞人列表
                 UserlikeNum=UClikeNum,                                   # 点赞数
                 UserIsFriend=1,                                          # 这个作品集是不是好友推荐
+                UserIsLiked=isliked,
             )
             return ret_uc
         except Exception, e:
