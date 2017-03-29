@@ -14,7 +14,7 @@ sys.setdefaultencoding('utf8')  # python的str默认是ascii编码，和unicode�
 DB_CONNECT_STRING = 'mysql+mysqldb://root:ydrs.sql.7234@114.215.16.151:3306/Shacus?charset=utf8'
 
 
-#DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1:3307/shacustest?charset=utf8'
+DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1:3307/shacustest?charset=utf8'
 
 #DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1/shacustest?charset=utf8'
 

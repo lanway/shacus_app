@@ -1,4 +1,6 @@
 # -*-coding: utf-8 -*-
+import base64
+
 __author__='兰威'
 import hashlib
 import io
@@ -52,3 +54,6 @@ class upload(BaseHandler):
             retjson['code']=500
             retjson['content']=u"系统错误"
         self.write(json.dumps(retjson, ensure_ascii=False, indent=2))  # ensure_ascii:允许中文
+
+
+base64
