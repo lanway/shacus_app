@@ -364,7 +364,13 @@ class UserImgHandler(object):
                 UClikeNum += 1
         else:
             UClikeNum = 0
-
+            
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+                                             UClike.UCLvalid == 1).all()
+        if like:
+            isliked = 1
+        else:
+            isliked = 0
         try:
             ret_uc = dict(
                 UCid=UCsample.UCid,
@@ -377,6 +383,7 @@ class UserImgHandler(object):
                 UserlikeList=UserList,                                   # 点赞人列表
                 UserlikeNum=UClikeNum,                                   # 点赞数
                 UserIsFriend=1,                                          # 这个作品集是不是好友推荐
+                UserIsLiked=isliked,
             )
             return ret_uc
         except Exception, e:

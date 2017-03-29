@@ -421,7 +421,8 @@ class Userhpimg(BaseHandler):
                 print userid.Uid
                 print friendlist
                 try:
-                    UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(friendlist), UserCollection.UCvalid == 1).\
+                    UserCollecions = self.db.query(UserCollection).filter(UserCollection.UCuser.in_(friendlist),
+                                                                          UserCollection.UCvalid == 1).\
                         order_by(desc(UserCollection.UCid)).limit(6).all()
                     for item in UserCollecions:
                         retdata.append(imghandler.UC_login_model(item, item.UCuser))
