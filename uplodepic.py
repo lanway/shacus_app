@@ -55,5 +55,3 @@ class upload(BaseHandler):
             retjson['content']=u"系统错误"
         self.write(json.dumps(retjson, ensure_ascii=False, indent=2))  # ensure_ascii:允许中文
 
-
-base64
