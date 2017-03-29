@@ -59,14 +59,14 @@ def user_login_fail_model():
     return user_model
 
 def get_user_detail_from_user(user):
-    try:
-        if user.Ubirthday:
-            Ubirthday = user.Ubirthday.strftime('%Y-%m-%d %H:%M:%S'),
-        else:
-            Ubirthday = ''
-    except Exception, e:
-        print e
-        Ubirthday = ''
+    # try:
+    #     if user.Ubirthday:
+    #         Ubirthday = user.Ubirthday.strftime('%Y-%m-%d %H:%M:%S'),
+    #     else:
+    #         Ubirthday = ''
+    # except Exception, e:
+    #     print e
+    #     Ubirthday = ''
     if user.Usex == True:
         gender = 1
     else:
@@ -80,7 +80,7 @@ def get_user_detail_from_user(user):
         sex=gender,
         score=user.Uscore,
         location=user.Ulocation,
-        birthday=Ubirthday,
+        birthday=user.Ubirthday.strftime('%Y-%m-%d %H:%M:%S'),
         registTime=user.UregistT.strftime('%Y-%m-%d %H:%M:%S'),
         mailBox=user.Umailbox,
         headImage=Ufuncs.get_user_headimage_intent_from_userid(user.Uid),
