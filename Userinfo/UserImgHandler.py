@@ -404,7 +404,7 @@ class UserImgHandler(object):
                 return 1
         return 0
 
-    def friendlist(self,uid):
+    def friendlist(self, uid):
         friendlist = []
         list = get_db().query(UserLike).filter(UserLike.ULlikeid == uid, UserLike.ULvalid == 1).all()
         for item in list:
@@ -412,4 +412,24 @@ class UserImgHandler(object):
             friendlist.append(friend.Uid)
         return friendlist
 
+    def reclist(self, uid):
+        reclist = []
+        friendlist = []
+        list = get_db().query(UserLike).filter(UserLike.ULlikeid == uid, UserLike.ULvalid == 1).all()
+        for item in list:
+            friend = get_db().query(User).filter(User.Uid == item.ULlikedid).one()
+            friendlist.append(friend.Uid)
+        print 'friendlist: '
+        print friendlist
+        for fitem in friendlist:
+            list = get_db().query(UserLike).filter(UserLike.ULlikeid == fitem, UserLike.ULvalid == 1).all()
+            for friend in list:
+                ffriend = get_db().query(User).filter(User.Uid == friend.ULlikedid,).one()
+                if ffriend.Uid != uid:
+                    reclist.append(ffriend.Uid)
+                else:
+                    continue
+        return reclist
 
+f = UserImgHandler()
+print f.reclist(116)
