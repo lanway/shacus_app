@@ -16,7 +16,6 @@ class Userhpimg(BaseHandler):
 
     def post(self):
         type = self.get_argument('type')
-        retjson ={'code':'','contents':''}
         # 添加个人图片:第一步返回token
         if type=='10808':
             retjson = {'code': '', 'contents': ""}
