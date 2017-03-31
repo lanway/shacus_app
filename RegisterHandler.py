@@ -103,7 +103,7 @@ class RegisterHandler(BaseHandler):
                     Uname='',
                     Ulocation='',  #  新用户注册默认level为1
                     Umailbox='',
-                    Ubirthday='0000-00-00 00:00:00',
+                    Ubirthday='2000-01-01 00:00:00',
                     Utel=m_phone,
                     Uscore=0,
                     Usex=1,
