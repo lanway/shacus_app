@@ -31,18 +31,17 @@ class Userhomepager(BaseHandler):
         u_id = self.get_argument('uid')
         auth_key = self.get_argument('authkey')
         u_other_id = self.get_argument('seeid')
-        if type == '10801':                                    #查看个人主页
+        if type == '10801':                                    # 查看个人主页
             ufuncs = Userinfo.Ufuncs.Ufuncs()
-            if ufuncs.judge_user_valid(u_id, auth_key):                    #判断userID与auth_key是否匹配
+            if ufuncs.judge_user_valid(u_id, auth_key):                    # 判断userID与auth_key是否匹配
                 u_info = self.db.query(User).filter(User.Uid == u_other_id).one()
-                #u_image_info = self.db.query(UserImage).filter(UserImage.UIuid == u_other_id).one()
-                u_change_info =self.db.query(UCinfo).filter(UCinfo.UCuid == u_other_id).one()
-                ret_user_info = userinfo_smply(u_info,u_change_info)
+                u_change_info = self.db.query(UCinfo).filter(UCinfo.UCuid == u_other_id).one()
+                ret_user_info = userinfo_smply(u_info, u_change_info)
                 ret_json_contents['user_info'] = ret_user_info
 
-                exist = self.db.query(UserLike).filter(UserLike.ULlikeid == u_id,UserLike.ULlikedid == u_other_id,
-                                                       UserLike.ULvalid ==1).all()
-                if exist :
+                exist = self.db.query(UserLike).filter(UserLike.ULlikeid == u_id, UserLike.ULlikedid == u_other_id,
+                                                       UserLike.ULvalid == 1).all()
+                if exist:
                     ret_json_contents['follow'] =True
                 else:
                     ret_json_contents['follow'] = False
@@ -54,17 +53,17 @@ class Userhomepager(BaseHandler):
                     try:
                         ap_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,
                                                                     Appointment.APvalid == True).one()
-                        retdata_ap = ap.ap_Model_simply(ap_info,retdata_ap)
+                        retdata_ap = ap.ap_Model_simply(ap_info, retdata_ap)
                     except Exception,e:
                         print e
                         retjson['code'] = '10602'
                         retjson['contents']='该约拍不存在'
-                try :
+                try:
                     u_spap_infos = self.db.query(Appointment).filter(Appointment.APsponsorid == u_other_id,
                                                                  Appointment.APvalid == True).all()
 
                     for u_spap_info in u_spap_infos:
-                       retdata_ap = ap.ap_Model_simply(u_spap_info,retdata_ap)
+                       retdata_ap = ap.ap_Model_simply(u_spap_info, retdata_ap)
                 except Exception, e:
                     print e
 
@@ -75,7 +74,7 @@ class Userhomepager(BaseHandler):
                                                                  ActivityEntry.ACEregisttvilid ==1).all()
                 for u_ac_info in u_ac_infos:
                     ac_id = u_ac_info.ACEacid
-                    ac_info = self.db.query(Activity).filter(Activity.ACid ==ac_id ,Activity.ACvalid == 1).all()
+                    ac_info = self.db.query(Activity).filter(Activity.ACid ==ac_id, Activity.ACvalid == 1).all()
                     if ac_info:
                         ret_ac  = ac.ac_Model_simply(ac_info[0],'default')
                         retdata_ac.append(ret_ac)
