@@ -9,11 +9,13 @@ import time
 
 from sqlalchemy import desc
 
+from Appointment.APgroupHandler import APgroupHandler
 from Appointment.Ranklist import RanklistHandler
 from  BaseHandlerh import BaseHandler
-from Database.tables import User, UCinfo, Image, UserImage, Appointment
+from Database.tables import User, UCinfo, Image, UserImage, Appointment, UserLike, UserCollection
 from Database.tables import Verification
 from Userinfo import Usermodel
+from Userinfo.UserImgHandler import UserImgHandler
 from Userinfo.Userctoken import get_token
 from Userinfo.Usermodel import user_login_fail_model
 from messsage import message
@@ -187,7 +189,7 @@ class RegisterHandler(BaseHandler):
                             print e
                             self.retjson['contents'] =r'初始化用户信息时出错'  # ucinfo插入失败
                         # self.retjson['contents'] = retdata
-                        self.get_login_model(user)
+                        self.get_new_login_model(user)
                         self.retjson['code'] = 10004  # success
 
                     except Exception, e:
@@ -244,6 +246,35 @@ class RegisterHandler(BaseHandler):
             retdata.append(data)
             self.retjson['code'] = '10111'
             self.retjson['contents'] = retdata
+        except Exception, e:
+            print e
+            self.retjson['contents'] = r"摄影师约拍列表导入失败！"
+
+    def get_new_login_model(self, user):
+        models = []
+        retdata = []
+        imghandler = UserImgHandler()
+        user_model = Usermodel.get_user_detail_from_user(user)  # 用户模型
+        try:
+            my_likes = self.db.query(UserLike).filter(UserLike.ULlikeid == user.Uid, UserLike.ULvalid == 1).all()
+            for like in my_likes:
+                pic = self.db.query(UserCollection).filter(UserCollection.UCuser == like.ULlikedid,
+                                                           UserCollection.UCvalid == 1).all()
+                for item in pic:
+                    retdata.append(imghandler.UC_login_model(item, item.UCuser))
+            # 推荐作品集
+            # 约拍类型和id
+            data = dict(
+                userModel=user_model,
+                daohanglan=self.bannerinit(),
+                CollectionList=retdata,  # 好友作品集
+                RecList=[],  # 推荐作品集
+                groupList=APgroupHandler.Group(),
+            )
+
+            models.append(data)
+            self.retjson['code'] = '10111'
+            self.retjson['contents'] = models
         except Exception, e:
             print e
             self.retjson['contents'] = r"摄影师约拍列表导入失败！"
