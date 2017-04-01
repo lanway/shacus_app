@@ -55,8 +55,8 @@ class APchatCreateHandler(BaseHandler):
                             APsponsorid = sponsor.Uid,
                             APtype= type_ap,
                             APlocation='',
-                            APstartT='0000-00-00:00:00:00',
-                            APendT='0000-00-00:00:00:00',
+                            APstartT='2000-01-01:00:00:00',
+                            APendT='2000-01-01:00:00:00',
                             APcontent='',  # 活动介绍
                             APclosed=0,
                             APlikeN=0,
