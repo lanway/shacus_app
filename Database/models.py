@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 import sys
-
+import redis
 from sqlalchemy.orm import scoped_session, sessionmaker
 '''
 @author: 黄鑫晨
@@ -18,7 +18,12 @@ DB_CONNECT_STRING = 'mysql+mysqldb://root:ydrs.sql.7234@114.215.16.151:3306/Shac
 
 #DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1/shacustest?charset=utf8'
 
+pool = redis.ConnectionPool(host='192.168.0.7', port=6379)
+r = redis.Redis(connection_pool=pool)
 
+r.set('name', 'zhangsan')   #添加
+print "成功了"
+print (r.get('name'))
 
 
 #  pool_recycle=10
