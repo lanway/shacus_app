@@ -80,7 +80,7 @@ def get_user_detail_from_user(user):
         sex=gender,
         score=user.Uscore,
         location=user.Ulocation,
-        birthday=user.Ubirthday.strftime('%Y-%m-%d %H:%M:%S'),
+        birthday=user.Ubirthday.strftime('%Y-%m-%d'),
         registTime=user.UregistT.strftime('%Y-%m-%d %H:%M:%S'),
         mailBox=user.Umailbox,
         headImage=Ufuncs.get_user_headimage_intent_from_userid(user.Uid),
