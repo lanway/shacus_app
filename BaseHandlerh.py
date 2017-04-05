@@ -3,6 +3,8 @@
 import tornado.web
 
 from Database import models
+from Database.models import redis_engine
+
 '''
 @author: 黄鑫晨
 '''
@@ -18,6 +20,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def on_finish(self):
         self.db.close()
+
+    @property
+    def redis(self):
+        return redis_engine
 
 
 

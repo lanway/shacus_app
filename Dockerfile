@@ -49,6 +49,9 @@ RUN pip install sqlalchemy==1.1.0
 #配置tornado
 RUN pip install tornado==4.0
 
+#配置redis
+RUN pip install redis==2.10.5
+
 #创建一个指定的文件夹用于放置代码
 RUN mkdir -p /app
 WORKDIR /app
