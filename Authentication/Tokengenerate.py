@@ -2,6 +2,8 @@
 '''
 @author:兰威
 '''
+import sys
+reload(sys)
 import base64
 
 import time
