@@ -3,7 +3,7 @@
 @author:兰威
 '''
 import sys
-reload(sys)
+sys.path.append("..")
 import base64
 
 import time
@@ -16,6 +16,7 @@ class Tokengenerate(BaseHandler):
     p_id = ''
     expire = 7200   #过期时间
     def __init__(self,uid,pid):
+
         '''
 
         Args:
