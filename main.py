@@ -14,7 +14,7 @@ from Activity.ACHandler import ActivityCreate, ActivityRegister
 from Activity.ACaskHandler import AskActivity
 from Activity.ACentryHandler import AskEntry
 from Appointment.APAskHandler import APaskHandler
-from Appointment.APCreateHandler import APcreateHandler
+from Appointment.APCreateHandler_new import APcreateHandler
 from Appointment.APRegistHandler import APregistHandler
 from Appointment.APchatCreateHandler import APchatCreateHandler
 from Appointment.APpraseHandler import APprase

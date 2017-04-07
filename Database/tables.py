@@ -160,7 +160,7 @@ class Appointment(Base):  #摄影师-模特约拍
     # APfree = Column(Boolean)
     APpricetag = Column(Integer, nullable=False, default=0) # 约拍的价格类型
     APprice = Column(VARCHAR(64))
-    APclosed = Column(Boolean)
+    APclosed = Column(Boolean,default=0)
     APcreateT = Column(DateTime(timezone=True), default=func.now())
     APtype = Column(Boolean,nullable=False,default=0) # 约拍类型，模特约摄影师(1)或摄影师约模特(0)
     APaddallowed = Column(Boolean,default=0)
