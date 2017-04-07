@@ -36,7 +36,7 @@ class Tokengenerate(BaseHandler):
         date = time.time()+self.expire
         key = '{uid}+{pid}+{date}'.format(uid = self.u_id,pid = self.p_id,date = date)
         token = base64.urlsafe_b64encode(key)
-        self.redis.set(self.u_id,token)
+        self.redis.set(self.u_id,token,ex=self.expire)
         return token
 test = Tokengenerate(1,1)
 print test.generate()

@@ -2,6 +2,8 @@
 '''
 @author:兰威
 '''
+import sys
+sys.path.append("..")
 import base64
 
 import time
