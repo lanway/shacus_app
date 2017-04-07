@@ -126,6 +126,7 @@ class APmodelHandler(object):
                 # APstartT=appointment.APstartT.strftime('%Y-%m-%d %H:%M:%S'),
                 # APendT=appointment.APendT.strftime('%Y-%m-%d %H:%M:%S'),
                 # APjoinT=appointment.APjoinT.strftime('%Y-%m-%d %H:%M:%S'),
+                APtime=appointment.APtime,
                 APcontent=appointment.APcontent,
                 #APfree=int(appointment.APfree),
                 APpricetag=appointment.APpricetag,
