@@ -349,7 +349,7 @@ class Userhpimg(BaseHandler):
                 print '进入作品集列表获取'
                 try:
                     for item in pic:
-                        retdata.append(imghandler.UC_login_model(item,u_id))
+                        retdata.append(imghandler.UC_simple_model(item, u_id))
                     retjson['code'] = '10818'
                     retjson['contents'] = retdata
                 except Exception, e:
