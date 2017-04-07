@@ -149,14 +149,16 @@ class Appointment(Base):  #摄影师-模特约拍
 
     APid = Column(Integer, primary_key=True, nullable=False)
     APsponsorid = Column(Integer, ForeignKey('User.Uid', ondelete='CASCADE'), nullable=False)  # 发起者
-    APtitle=Column(VARCHAR(24),nullable=False)
-    APlocation = Column(VARCHAR(128), nullable=False)
+    # APtitle=Column(VARCHAR(24),nullable=False)
+    APlocation = Column(VARCHAR(128), nullable=False,default='南京')
     APtag=Column(VARCHAR(12)) # 约拍标签？确认长度
-    APstartT = Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
-    APendT = Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
-    APjoinT=Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
-    APcontent=Column(VARCHAR(128), nullable=False, default='')
-    APfree = Column(Boolean)
+    # APstartT = Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
+    # APendT = Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
+    # APjoinT=Column(DateTime, nullable=False, default='0000-00-00 00:00:00 ')
+    APtime = Column(VARCHAR(128), nullable=False, default='')  # 约拍的时间描述
+    APcontent=Column(VARCHAR(128), nullable=False, default='')  # 约拍的内容秒速
+    # APfree = Column(Boolean)
+    APpricetag = Column(Integer, nullable=False, default=0) # 约拍的价格类型
     APprice = Column(VARCHAR(64))
     APclosed = Column(Boolean)
     APcreateT = Column(DateTime(timezone=True), default=func.now())
@@ -166,7 +168,7 @@ class Appointment(Base):  #摄影师-模特约拍
     APvalid = Column(Boolean, default=1, nullable=False)
     APregistN = Column(Integer, nullable=False, default=0)
     APstatus = Column(Integer, nullable=False, default=0)
-    APgroup = Column(Integer, nullable=False, default=0)
+    APgroup = Column(Integer, nullable=False, default=0)  # 约拍的分类
 
 
 class AppointmentInfo(Base):
@@ -179,7 +181,7 @@ class AppointmentInfo(Base):
     AIpscore = Column(Integer,default=0)
     AImcomment = Column(VARCHAR(128))
     AIpcomment = Column(VARCHAR(128))
-    AIappoid = Column(Integer,ForeignKey('Appointment.APid',onupdate='CASCADE'))#与AIid相同，是否重复？
+    AIappoid = Column(Integer,ForeignKey('Appointment.APid',onupdate='CASCADE')) # 与AIid相同，是否重复？
 
 class AppointEntry(Base):
     __tablename__ = "AppointEntry"
