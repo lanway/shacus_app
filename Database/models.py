@@ -18,7 +18,7 @@ DB_CONNECT_STRING = 'mysql+mysqldb://root:ydrs.sql.7234@114.215.16.151:3306/Shac
 
 #DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1/shacustest?charset=utf8'
 
-pool = redis.ConnectionPool(host='192.168.0.7', port=6379,password='ydrs.redis.7234')
+pool = redis.ConnectionPool(host='114.215.16.151', port=6379,password='ydrs.redis.7234')
 redis_engine = redis.Redis(connection_pool=pool)
 
 
