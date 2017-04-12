@@ -357,6 +357,22 @@ class UCcomment(Base):
     UCcontent = Column(VARCHAR(128))
     UCcommentTime = Column(DateTime(timezone=True), default=func.now())
 
+class ApCompanion(Base):
+    __tablename__ = 'ApCompanion'
+    ApCompanionid=Column(Integer, primary_key=True)
+    ApCtitle = Column(VARCHAR(128))
+    ApCcontent = Column(VARCHAR(128))
+    ApCompanionValid = Column(Integer, nullable=False, default=1)
+    ApCompanionurl = Column(VARCHAR(128))
+
+class CompanionImg(Base):
+    __tablename__ = 'CompanionImg'
+    Companionid = Column(Integer, ForeignKey(ApCompanion.ApCompanionid, onupdate='CASCADE'))
+    Companionimid = Column(Integer, ForeignKey(Image.IMid, onupdate='CASCADE'), primary_key=True)
+    CompanionImgurl = Column(VARCHAR(128))
+    CompanionValid = Column(Integer, nullable=False, default=1)
+
+
 
 
 

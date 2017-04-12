@@ -4,7 +4,7 @@
 @attention: Model为模型，model为模特
 '''
 from Database.models import get_db
-from Database.tables import AppointLike, AppointmentImage
+from Database.tables import AppointLike, AppointmentImage, CompanionImg
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.Ufuncs import Ufuncs
 
@@ -162,6 +162,21 @@ class APmodelHandler(object):
                 AIappoid=appointment.AIappoid
         )
         retdata.append(m_ApInforesponse)
+
+    def ApCompanion(clas,Companion,retdata):
+        auth = AuthKeyHandler()
+        Companion_imgs = get_db().query(CompanionImg).filter(CompanionImg.Companionid == Companion.ApCompanionid).all()
+        Imgs = []
+        for item in Companion_imgs:
+            Imgs.append(auth.download_url(item.CompanionImgurl))
+        ApCompanion_model = dict(
+            CompanionId=Companion.ApCompanionid,
+            CompanionTitle=Companion. ApCtitle,
+            CompanionContent=Companion. ApCcontent,
+            CompanionUrl=Companion.ApCompanionurl,
+            CompanionPic=Imgs,
+        )
+        retdata.append(ApCompanion_model)
 
 
 
