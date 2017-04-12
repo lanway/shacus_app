@@ -98,8 +98,8 @@ class APcreateHandler(BaseHandler):  # 创建约拍
                     ap = self.db.query(Appointment).filter(Appointment.APcontent == ap_content).order_by(desc(Appointment.APcreateT)).all()
                     ap_id = ap[0].APid
                     imghandler.insert_appointment_image(ap_imgs_json, ap_id)
-                    self.retjson['code'] = '10214'
-                    self.retjson['contents'] = '发布约拍成功'
+                self.retjson['code'] = '10214'
+                self.retjson['contents'] = '发布约拍成功'
             except Exception, e:
                     print e, '网络故障'
                     self.retjson['contents'] = '数据库错误'

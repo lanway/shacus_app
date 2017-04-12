@@ -14,7 +14,8 @@ class Tokenjudge(BaseHandler):
 
     s_time = ''
     token = ''
-    difference  = 1 #用于判断请求时间的差值，判断是否由客户端发送的
+    difference  = 10000000000000000000000000000000000000000000 #用于判断请求时间的差值，判断是否由客户端发送的
+    expire = 72000
     def __init__(self,stime,token,):
         '''
 
@@ -33,11 +34,13 @@ class Tokenjudge(BaseHandler):
         '''
         now_time = time.time()
         difference = abs(now_time-self.s_time)
+        print difference
         if difference<self.difference:
             key = base64.urlsafe_b64decode(self.token)
             key = key.split("+")
-            if key[2]<now_time:
+            if key[2]>now_time:
                 if self.redis.get(key[0]) == self.token:
+                    self.redis.expire(key[0] , self.expire)
                     return True
                 else:
                     return False
@@ -45,5 +48,5 @@ class Tokenjudge(BaseHandler):
                 return False
         else:
             return False
-test = Tokenjudge(111,'MSsxKzE0OTEzNzAzODguOA==')
+test = Tokenjudge(1,'MSsxKzE0OTIwMDg2NjQuODY=')
 test.judge()
