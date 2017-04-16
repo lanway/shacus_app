@@ -47,12 +47,6 @@ class APmodelHandler(object):
                 img_tokens.append(authkeyhandler.download_assign_url(img_url,200,200))
         except Exception,e:
             print '无图片'
-        try:
-            if img_tokens[0]:
-                print '有图片'
-        except Exception, e:
-            img_tokens.append(authkeyhandler.download_url('default13.jpg'))
-            print e
         return img_tokens
 
 
@@ -97,6 +91,7 @@ class APmodelHandler(object):
                 APpricetype=appointment.APpricetag,
                 APprice=appointment.APprice,
                 Userlocation=user.Ulocation,
+                APcreatetime=appointment.APcreateT.strftime("%Y-%m-%d %H:%M:%S")
                 )
         return ret_ap
 
