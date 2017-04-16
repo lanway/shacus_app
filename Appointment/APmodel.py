@@ -3,8 +3,10 @@
 @author：黄鑫晨
 @attention: Model为模型，model为模特
 '''
+import time
+
 from Database.models import get_db
-from Database.tables import AppointLike, AppointmentImage, CompanionImg
+from Database.tables import AppointLike, AppointmentImage, CompanionImg, User
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.Ufuncs import Ufuncs
 
@@ -42,7 +44,7 @@ class APmodelHandler(object):
             imgs = get_db().query(AppointmentImage).filter(AppointmentImage.APIapid == appointmentid).all()  # 返回所有图片项
             for img in imgs:
                 img_url = img.APIurl
-                img_tokens.append(authkeyhandler.download_url(img_url))
+                img_tokens.append(authkeyhandler.download_assign_url(img_url,200,200))
         except Exception,e:
             print '无图片'
         try:
@@ -56,7 +58,7 @@ class APmodelHandler(object):
 
     @classmethod
     def ap_Model_simply_one(clas, appointment, userid):
-        '''得到简单约拍模型，用于登录首页
+        '''得到简单约拍模型，约拍列表
         :param appointment: 传入一个appointment对象
         :return: 返回单个约拍简单模型
         '''
@@ -76,24 +78,25 @@ class APmodelHandler(object):
         # todo:userliked不对
         print '得到Url前'
         apimgurls = APmodelHandler.ap_get_imgs_from_apid(appointment.APid)
-        try:
-            if apimgurls[0]:
-                apimgurl = apimgurls[0]
-            else:
-                apimgurl=''
-        except Exception,e:
-            print e
-            apimgurl=[]
         headimage = Ufuncs.get_user_headimage_intent_from_userid(appointment.APsponsorid)
+        user = get_db().query(User).filter(User.Uid == userid).one()
+        user_bir = user.Ubirthday.strftime('%Y')   # 获取用户生日（年）
+        now = time.strftime('%Y',time.localtime(time.time()))  # 获取当前年份
+        user_age = int(now)-int(user_bir)
         ret_ap = dict(
             APid=appointment.APid,
                 # APtitle=appointment.APtitle,
-                APimgurl=apimgurl,
+                APimgurl=apimgurls,
                 APtime=appointment.APtime, # 这里我改过了。。。。 2017-4-7 兰威 apstartime
                 APlikeN=appointment.APlikeN,
                 APregistN=appointment.APregistN,
                 Userimg=headimage,
-                Userliked=liked
+                Userliked=liked,
+                Userage=str(user_age)+"岁",
+                Useralais=user.Ualais,
+                APpricetype=appointment.APpricetag,
+                APprice=appointment.APprice,
+                Userlocation=user.Ulocation,
                 )
         return ret_ap
 
