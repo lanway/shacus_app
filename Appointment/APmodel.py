@@ -73,7 +73,8 @@ class APmodelHandler(object):
         print '得到Url前'
         apimgurls = APmodelHandler.ap_get_imgs_from_apid(appointment.APid)
         headimage = Ufuncs.get_user_headimage_intent_from_userid(appointment.APsponsorid)
-        user = get_db().query(User).filter(User.Uid == userid).one()
+        u_id = appointment.APsponsorid     # 创建者的id
+        user = get_db().query(User).filter(User.Uid == u_id).one()
         user_bir = user.Ubirthday.strftime('%Y')   # 获取用户生日（年）
         now = time.strftime('%Y',time.localtime(time.time()))  # 获取当前年份
         user_age = int(now)-int(user_bir)
