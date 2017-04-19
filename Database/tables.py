@@ -33,6 +33,7 @@ class User(Base): # 用户表   #添加聊天专用chattoken
     Uauthkey = Column(VARCHAR(32))
     Uchattoken = Column(VARCHAR(128), nullable=False)
     Uage = Column(Integer, nullable=False, default=0)
+    Ucategory = Column(Integer, nullable=False, default=0)
 
 class UCinfo(Base):
     __tablename__ = 'UCinfo'
@@ -334,12 +335,12 @@ class UserCollection(Base):
 
 class UserCollectionimg(Base):
     __tablename__ = 'UserCollectionimg'
-    UCIuser = Column(Integer, ForeignKey(UserCollection.UCid, onupdate='CASCADE')) #作品集id
+    UCIuser = Column(Integer, ForeignKey(UserCollection.UCid, onupdate='CASCADE')) # 作品集id
     UCIimid = Column(Integer, ForeignKey(Image.IMid, onupdate='CASCADE'), primary_key=True)
     UCIurl = Column(VARCHAR(128))
     UCIvalid = Column(Integer, nullable=False, default=0)
-    UCIheight = Column(Integer,default=0)
-    UCIwidth = Column(Integer,default=0)
+    UCIheight = Column(Integer, default=0)
+    UCIwidth = Column(Integer, default=0)
 
 class UClike(Base):
     __tablename__ = 'UClike'

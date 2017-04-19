@@ -1,6 +1,7 @@
 # coding=utf-8
 from Database.models import get_db
-from Database.tables import UserImage, Image
+from Database.tables import UserImage, Image, User, UserCollectionimg, UserCollection
+from FileHandler.ImageHandler import ImageHandler
 from FileHandler.Upload import AuthKeyHandler
 from Database.models import get_db
 from FileHandler.Upload import AuthKeyHandler
@@ -88,4 +89,40 @@ def get_user_detail_from_user(user):
         chattoken=user.Uchattoken
     )
     return user_model
+
+# 推荐摄影师模特列表
+@staticmethod
+def rec_user_list(user):
+    # user是一个用户模型而且必须有作品集
+    try:
+        imghandler= AuthKeyHandler()
+        uhead_pic = get_db().query(UserImage).filter(UserImage.UIuid == user.id).all()
+        # 该用户的所有作品集
+        uc_list = get_db().query(UserCollection).filter(UserCollection.UCuser == user.Uid).all()
+        # 用户第一个作品集所有图片
+        uc_pic = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == uc_list[0]).all()
+
+        piclist = []
+        uc_all_pic = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == uc_list[0]).limit(5).all()
+        for item in uc_all_pic:
+            piclist.append(imghandler.download_url(item.UCIurl))
+        usermodel = dict(
+            Uid=user.Uid,  # 用户id
+            Uphone=user.Utel,  # 用户手机号
+            Ualais=user.Ualais,  # 用户名
+            Uage=user.Uage,  # 用户年龄
+            Usex=user.Usex,  # 用户性别
+            Ucategory='',    # 用户类型
+        )
+        user_model = dict(
+            UserModel=usermodel,
+            Uheadimg=imghandler.download_url(uhead_pic.UIurl),      # 用户头像
+            UcFistimg=imghandler.download_assign_url(uc_pic[0].UCIurl, 200, 200),          # 作品集第一张
+            Ucimg=piclist,
+        )
+        return user_model
+    except Exception, e:
+        print e
+        # print '推荐列表没有获取到用户'
+
 
