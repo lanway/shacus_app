@@ -141,8 +141,8 @@ class AppointmentImage(Base):
 class UserImage(Base):
     __tablename__ = 'UserImage'
 
-    UIuid = Column(Integer,ForeignKey("User.Uid", onupdate="CASCADE"))
-    UIimid = Column(Integer,ForeignKey("Image.IMid", onupdate="CASCADE"), primary_key=True)
+    UIuid = Column(Integer, ForeignKey("User.Uid", onupdate="CASCADE"))
+    UIimid = Column(Integer, ForeignKey("Image.IMid", onupdate="CASCADE"), primary_key=True)
     UIurl = Column(VARCHAR(128))
 
 class Appointment(Base):  #摄影师-模特约拍

@@ -28,7 +28,7 @@ class UserList(BaseHandler):
                     imghandler = UserImgHandler()
                     reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
                     try:
-                        UserRec = self.db.query(User).filter(User.Uid.in_(reclist),User.Ucategory == 2).all()
+                        UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 2).all()
                         for item in UserRec:
                             uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
                             if uc[0]:  # 如果有作品集
@@ -71,5 +71,7 @@ class UserList(BaseHandler):
                 self.retjson['contents'] = '修改用户类型成功'
             except Exception, e:
                 print e
+                self.retjson['code'] = '10843'
+                self.retjson['contents'] = '修改用户类型失败'
 
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
