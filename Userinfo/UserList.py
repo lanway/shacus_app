@@ -16,13 +16,13 @@ class UserList(BaseHandler):
         type = self.get_argument('type')
 
         # 请求摄影师模特列表
-        if type == '10840':
+        if type == '10850':
             authkey = self.get_argument('authkey')  # 用户认证
             retdata = []
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == authkey).one()  # 用户本身
                 if userid.Ucategory == 0:
-                    self.retjson['code'] = '10841'
+                    self.retjson['code'] = '10851'
                     self.retjson['contents'] = '请设置您的用户类型:摄影师or模特'
                 elif userid.Ucategory == 1:
                     imghandler = UserImgHandler()
@@ -35,7 +35,7 @@ class UserList(BaseHandler):
                                 retdata.append(Usermodel.rec_user_list(item))
                             else:
                                 continue
-                        self.retjson['code'] = '10840'
+                        self.retjson['code'] = '10850'
                         self.retjson['contents'] = retdata
                     except Exception, e:
                         print e
@@ -51,7 +51,7 @@ class UserList(BaseHandler):
                                 retdata.append(Usermodel.rec_user_list(item))
                             else:
                                 continue
-                        self.retjson['code'] = '10840'
+                        self.retjson['code'] = '10850'
                         self.retjson['contents'] = retdata
                     except Exception, e:
                         print e
@@ -60,18 +60,18 @@ class UserList(BaseHandler):
                 print e
 
         # 更改类型
-        if type == '10842':
+        if type == '10852':
             authkey = self.get_argument('authkey')  # 用户认证
             category = self.get_argument('category')
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == authkey).one()  # 用户本身
                 userid.Ucategory = category
                 self.db.commit()
-                self.retjson['code'] = '10842'
+                self.retjson['code'] = '10852'
                 self.retjson['contents'] = '修改用户类型成功'
             except Exception, e:
                 print e
-                self.retjson['code'] = '10843'
+                self.retjson['code'] = '10853'
                 self.retjson['contents'] = '修改用户类型失败'
 
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
