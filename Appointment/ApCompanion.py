@@ -59,7 +59,7 @@ class ApCompanionHandler(BaseHandler):
             Companion_all = self.db.query(ApCompanion).filter(ApCompanion.ApCompanionValid == 1).all()
             modelhandler = APmodelHandler()
             for item in Companion_all:
-                retdata.append(modelhandler.ApCompanion(item, retdata))
+                modelhandler.ApCompanion(item, retdata)
 
             self.retjson['code'] = '10904'
             self.retjson['contents'] = retdata
