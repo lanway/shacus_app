@@ -107,16 +107,16 @@ def rec_user_list(user):
         for item in uc_all_pic:
             piclist.append(imghandler.download_url(item.UCIurl))
         usermodel = dict(
-            Uid=user.Uid,  # 用户id
-            Uphone=user.Utel,  # 用户手机号
-            Ualais=user.Ualais,  # 用户名
-            Uage=user.Uage,  # 用户年龄
-            Usex=int(user.Usex),  # 用户性别
+            id=user.Uid,  # 用户id
+            phone=user.Utel,  # 用户手机号
+            nickName=user.Ualais,  # 用户名
+            age=user.Uage,  # 用户年龄
+            sex=int(user.Usex),  # 用户性别
             Ucategory=user.Ucategory,    # 用户类型
         )
         user_model = dict(
-            UserModel=usermodel,
-            Uheadimg=imghandler.download_url(uhead_pic[0].UIurl),      # 用户头像
+            userpublish=usermodel,
+            headimg=imghandler.download_url(uhead_pic[0].UIurl),      # 用户头像
             UcFirstimg=imghandler.download_assign_url(uc_pic[0].UCIurl, 200, 200),          # 作品集第一张
             Ucimg=piclist,
         )
