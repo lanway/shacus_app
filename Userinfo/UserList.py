@@ -24,38 +24,31 @@ class UserList(BaseHandler):
                 if userid.Ucategory == 0:
                     self.retjson['code'] = '10851'
                     self.retjson['contents'] = '请设置您的用户类型:摄影师or模特'
-                elif userid.Ucategory == 1:
+                else:
                     imghandler = UserImgHandler()
                     reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
-                    try:
-                        UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 2).all()
+                    if reclist:
+                        try:
+                            UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 2).all()
+                            for item in UserRec:
+                                uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
+                                if uc[0]:  # 如果有作品集
+                                    retdata.append(Usermodel.rec_user_list(item))
+                                else:
+                                    continue
+                            self.retjson['code'] = '10850'
+                            self.retjson['contents'] = retdata
+                        except Exception, e:
+                            print e
+                            self.retjson['contents'] = '获取推荐列表失败'
+                    else:  # 如果用户没有关注(也就是没有朋友)，那么推荐最近的作品集
+                        UserRec = self.db.query(UserCollection).filter(UserCollection.UCvalid == 1).\
+                            order_by(desc(UserCollection.UCcreateT)).limit(5).all()
                         for item in UserRec:
-                            uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
-                            if uc[0]:  # 如果有作品集
                                 retdata.append(Usermodel.rec_user_list(item))
-                            else:
-                                continue
                         self.retjson['code'] = '10850'
                         self.retjson['contents'] = retdata
-                    except Exception, e:
-                        print e
-                        self.retjson['contents'] = '获取推荐列表失败'
-                elif userid.Ucategory == 2:
-                    imghandler = UserImgHandler()
-                    reclist = imghandler.reclist(userid.Uid)  # 朋友的朋友列表(不包括自己)
-                    try:
-                        UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 1).all()
-                        for item in UserRec:
-                            uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
-                            if uc[0]:  # 如果有作品集
-                                retdata.append(Usermodel.rec_user_list(item))
-                            else:
-                                continue
-                        self.retjson['code'] = '10850'
-                        self.retjson['contents'] = retdata
-                    except Exception, e:
-                        print e
-                        self.retjson['contents'] = '获取推荐集列表失败'
+
             except Exception, e:
                 print e
 
