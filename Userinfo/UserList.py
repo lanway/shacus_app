@@ -45,7 +45,8 @@ class UserList(BaseHandler):
                         UserRec = self.db.query(UserCollection).filter(UserCollection.UCvalid == 1).\
                             order_by(desc(UserCollection.UCcreateT)).limit(5).all()
                         for item in UserRec:
-                                retdata.append(Usermodel.rec_user_list(item))
+                                Users = self.db.query(User).filter(User.Uid == item.UCuser).all()
+                                retdata.append(Usermodel.rec_user_list(Users[0]))
                         self.retjson['code'] = '10850'
                         self.retjson['contents'] = retdata
 
