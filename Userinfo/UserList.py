@@ -27,6 +27,8 @@ class UserList(BaseHandler):
                 else:
                     imghandler = UserImgHandler()
                     reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
+                    for item in reclist:
+                        print '推荐列表里有啊啊啊啊:'+item
                     if reclist:
                         try:
                             UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 2).all()
@@ -36,6 +38,13 @@ class UserList(BaseHandler):
                                     retdata.append(Usermodel.rec_user_list(item))
                                 else:
                                     continue
+                            if retdata == []:
+                                NewUserRec = self.db.query(UserCollection).filter(UserCollection.UCvalid == 1). \
+                                    order_by(desc(UserCollection.UCcreateT)).limit(5).all()
+                                for item in NewUserRec:
+                                    Users = self.db.query(User).filter(User.Uid == item.UCuser).all()
+                                    retdata.append(Usermodel.rec_user_list(Users[0]))
+
                             self.retjson['code'] = '10850'
                             self.retjson['contents'] = retdata
                         except Exception, e:
