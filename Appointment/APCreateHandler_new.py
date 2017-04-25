@@ -87,7 +87,7 @@ class APcreateHandler(BaseHandler):  # 创建约拍
                         APcontent=ap_content,
                         APpricetag=ap_pricetag,
                         APprice=ap_price,
-                        APtype=ap_type,
+                        APtype=int(ap_type),
                         APaddallowed=ap_addallowed,
                         APgroup=ap_group
                     )

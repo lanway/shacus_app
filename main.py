@@ -26,6 +26,7 @@ from Course.CourseLike import Courselike
 from Course.Coursefav import Coursefav
 from Database.models import engine
 from ImageCallback import ImageCallback
+from Message.Sysmessage import Sysmessage
 from Pressuretest import login
 from Pressuretest.Simplerequest import Simplerequest
 from RegisterHandler import RegisterHandler
@@ -78,6 +79,7 @@ class Application(tornado.web.Application):
              (r"/Userinfo/imghandler",Userhpimg),
              (r"/Userinfo/CollectionHandler",UserCollectionHandler),
              (r"/appointment/companion",ApCompanionHandler),
+            (r"/sysmessage",Sysmessage),
              (r"/recommend/reclist",UserList),
         ]
         tornado.web.Application.__init__(self, handlers)

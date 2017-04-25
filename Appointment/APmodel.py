@@ -6,7 +6,7 @@
 import time
 
 from Database.models import get_db
-from Database.tables import AppointLike, AppointmentImage, CompanionImg, User
+from Database.tables import AppointLike, AppointmentImage, CompanionImg, User, AppointEntry
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.Ufuncs import Ufuncs
 
@@ -103,7 +103,7 @@ class APmodelHandler(object):
     @classmethod
     def ap_Model_multiple(clas, appointment, userid):
         ap_regist_users = []
-
+        registed = 0
         liked = 0
         try:
             likedentry = get_db().query(AppointLike).filter(AppointLike.ALuid == userid,
@@ -116,8 +116,19 @@ class APmodelHandler(object):
             print e
             liked = 0
         try:
+            headimage = Ufuncs.get_user_headimage_intent_from_userid(appointment.APsponsorid)
             apimgurls = APmodelHandler.ap_get_imgs_from_apid(appointment.APid)
             ap_regist_users = Ufuncs.get_userlist_from_ap(appointment.APid)
+            user_id = appointment.APsponsorid  # 创建者的id
+            user = get_db().query(User).filter(User.Uid == user_id).one()
+            user_bir = user.Ubirthday.strftime('%Y')  # 获取用户生日（年）
+            now = time.strftime('%Y', time.localtime(time.time()))  # 获取当前年份
+            user_age = int(now) - int(user_bir)  # 用户年龄
+            user_sex = ("男" if user.Usex else "女")
+            exist = get_db().query(AppointEntry).filter(AppointEntry.AEregisterID
+                                                         == userid,AppointEntry.AEapid == appointment.APid,AppointEntry.AEvalid == 1 ).all()
+            if exist:
+                registed = 1
             m_response = dict(
                 APid=appointment.APid,
                 # APtitle=appointment.APtitle,
@@ -143,6 +154,12 @@ class APmodelHandler(object):
                 APstatus=appointment.APstatus,
                 Userliked=liked,
                 APgroup=appointment.APgroup,
+                Userimg=headimage,
+                Userage=str(user_age) + "岁",
+                Useralais=user.Ualais,
+                Userlocation=user.Ulocation,
+                Usex=user_sex,
+                Useregistd=registed,
             )
             return m_response
         except Exception, e:
