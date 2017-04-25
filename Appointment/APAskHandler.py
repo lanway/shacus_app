@@ -194,7 +194,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                 try:
                     appointment = self.db.query(Appointment).filter(Appointment.APid == ap_id).one()
                     if appointment:
-                        response = APmodelHandler.ap_Model_multiple(appointment, u_id)
+                        response = APmodelHandler.ap_Model_simply_one(appointment, u_id)
                         print 'before equal'
                         try:
                             print "in try"

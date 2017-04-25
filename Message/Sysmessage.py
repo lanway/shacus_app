@@ -4,6 +4,7 @@ import json
 import Userinfo.Ufuncs
 from BaseHandlerh import BaseHandler
 from Database.tables import AppointmentImage
+from FileHandler.Upload import AuthKeyHandler
 from rongcloud import RongCloud
 
 
@@ -27,12 +28,15 @@ class Sysmessage(BaseHandler):
             url = 'www.baidu.com'
             extra = 'hello'
             content = {}
+            imageurl = 'default.jpg'
+            authkey_handler = AuthKeyHandler()
             try:
-                app = self.db.query(AppointmentImage).filter(AppointmentImage.APIapid == appid).one()
-                imageurl = app.APIurl
+                app = self.db.query(AppointmentImage).filter(AppointmentImage.APIapid == appid).all()
+                if app:
+                    imageurl = app[0].APIurl
                 content['title'] = title
                 content['content'] = content_item
-                content['imageUri'] = imageurl
+                content['imageUri'] = authkey_handler.download_originpic_url(imageurl)
                 content['url'] = url
                 content['extra'] = extra
                 content_json = json.dumps(content,ensure_ascii=False, indent=2)
