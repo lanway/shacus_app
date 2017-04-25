@@ -31,7 +31,7 @@ class UserList(BaseHandler):
                         print '推荐列表里有啊啊啊啊:'+item
                     if reclist:
                         try:
-                            UserRec = self.db.query(User).filter(User.Uid.in_(reclist), User.Ucategory == 2).all()
+                            UserRec = self.db.query(User).filter(User.Uid.in_(reclist)).all()
                             for item in UserRec:
                                 uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
                                 if uc[0]:  # 如果有作品集
@@ -78,3 +78,8 @@ class UserList(BaseHandler):
                 self.retjson['contents'] = '修改用户类型失败'
 
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
+
+    def test(self):
+        imghandler = UserImgHandler()
+        reclist = imghandler.reclist(18)
+        print reclist
