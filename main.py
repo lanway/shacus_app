@@ -39,6 +39,7 @@ from Userinfo.UserImgHandler import UserImgHandler
 from Userinfo.UserIndent import UserIndent
 from Userinfo.UserInfo import UserInfo
 from Userinfo.UserLike import FindUlike
+from Userinfo.UserList import UserList
 from Userinfo.Userhomepager import Userhomepager
 from Userinfo.Userhpimg import Userhpimg
 from loginHandler import LoginHandler
@@ -79,6 +80,7 @@ class Application(tornado.web.Application):
              (r"/Userinfo/CollectionHandler",UserCollectionHandler),
              (r"/appointment/companion",ApCompanionHandler),
             (r"/sysmessage",Sysmessage),
+             (r"/recommend/reclist",UserList),
         ]
         tornado.web.Application.__init__(self, handlers)
         self.db = scoped_session(sessionmaker(bind=engine,

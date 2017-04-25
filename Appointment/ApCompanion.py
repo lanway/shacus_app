@@ -48,16 +48,18 @@ class ApCompanionHandler(BaseHandler):
                 Companion_to_delete = self.db.query(ApCompanion).filter(ApCompanion.ApCompanionid == Companion_id).one()
                 Companion_to_delete.ApCompanionValid = 0
                 self.db.commit()
+                self.retjson['code']='10902'
+                self.retjson['contents']='删除成功'
             except Exception, e:
                 print e
                 self.retjson['code']='10903'
                 self.retjson['contents']= '查找约拍伴侣失败'
-        elif type == '10904': # 返回约拍伴侣
+        elif type == '10904':# 返回约拍伴侣
             retdata = []
             Companion_all = self.db.query(ApCompanion).filter(ApCompanion.ApCompanionValid == 1).all()
             modelhandler = APmodelHandler()
             for item in Companion_all:
-                retdata.append(modelhandler.ApCompanion(item, retdata))
+                modelhandler.ApCompanion(item, retdata)
 
             self.retjson['code'] = '10904'
             self.retjson['contents'] = retdata

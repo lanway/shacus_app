@@ -33,6 +33,7 @@ class User(Base): # 用户表   #添加聊天专用chattoken
     Uauthkey = Column(VARCHAR(32))
     Uchattoken = Column(VARCHAR(128), nullable=False)
     Uage = Column(Integer, nullable=False, default=0)
+    Ucategory = Column(Integer, nullable=False, default=0)
 
 class UCinfo(Base):
     __tablename__ = 'UCinfo'
@@ -140,8 +141,8 @@ class AppointmentImage(Base):
 class UserImage(Base):
     __tablename__ = 'UserImage'
 
-    UIuid = Column(Integer,ForeignKey("User.Uid", onupdate="CASCADE"))
-    UIimid = Column(Integer,ForeignKey("Image.IMid", onupdate="CASCADE"), primary_key=True)
+    UIuid = Column(Integer, ForeignKey("User.Uid", onupdate="CASCADE"))
+    UIimid = Column(Integer, ForeignKey("Image.IMid", onupdate="CASCADE"), primary_key=True)
     UIurl = Column(VARCHAR(128))
 
 class Appointment(Base):  #摄影师-模特约拍
@@ -334,12 +335,12 @@ class UserCollection(Base):
 
 class UserCollectionimg(Base):
     __tablename__ = 'UserCollectionimg'
-    UCIuser = Column(Integer, ForeignKey(UserCollection.UCid, onupdate='CASCADE')) #作品集id
+    UCIuser = Column(Integer, ForeignKey(UserCollection.UCid, onupdate='CASCADE')) # 作品集id
     UCIimid = Column(Integer, ForeignKey(Image.IMid, onupdate='CASCADE'), primary_key=True)
     UCIurl = Column(VARCHAR(128))
     UCIvalid = Column(Integer, nullable=False, default=0)
-    UCIheight = Column(Integer,default=0)
-    UCIwidth = Column(Integer,default=0)
+    UCIheight = Column(Integer, default=0)
+    UCIwidth = Column(Integer, default=0)
 
 class UClike(Base):
     __tablename__ = 'UClike'
@@ -348,6 +349,8 @@ class UClike(Base):
     UClikeUserid = Column(Integer, ForeignKey(User.Uid, onupdate='CASCADE'))
     UCLvalid = Column(Boolean, nullable=False, default=1)
     UCLTime = Column(DateTime(timezone=True), default=func.now())
+
+
 class UCcomment(Base):
     __tablename__ = 'UCcomment'
     UCCid = Column(Integer, primary_key=True)
@@ -357,6 +360,7 @@ class UCcomment(Base):
     UCcontent = Column(VARCHAR(128))
     UCcommentTime = Column(DateTime(timezone=True), default=func.now())
 
+
 class ApCompanion(Base):
     __tablename__ = 'ApCompanion'
     ApCompanionid=Column(Integer, primary_key=True)
@@ -365,10 +369,11 @@ class ApCompanion(Base):
     ApCompanionValid = Column(Integer, nullable=False, default=1)
     ApCompanionurl = Column(VARCHAR(128))
 
+
 class CompanionImg(Base):
     __tablename__ = 'CompanionImg'
-    Companionid = Column(Integer, ForeignKey(ApCompanion.ApCompanionid, onupdate='CASCADE'))
-    Companionimid = Column(Integer, ForeignKey(Image.IMid, onupdate='CASCADE'), primary_key=True)
+    Companionid = Column(Integer)
+    Companionimid = Column(Integer, primary_key=True)
     CompanionImgurl = Column(VARCHAR(128))
     CompanionValid = Column(Integer, nullable=False, default=1)
 
