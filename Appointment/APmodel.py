@@ -95,7 +95,8 @@ class APmodelHandler(object):
                 Userlocation=user.Ulocation,
                 APcreatetime=appointment.APcreateT.strftime("%Y-%m-%d %H:%M:%S"),
                 Usex=user_sex,
-                APcontent=appointment.APcontent
+                APcontent=appointment.APcontent,
+                APgroup=appointment.APgroup
                 )
         return ret_ap
 
