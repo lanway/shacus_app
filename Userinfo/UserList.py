@@ -27,14 +27,12 @@ class UserList(BaseHandler):
                 else:
                     imghandler = UserImgHandler()
                     reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
-                    for item in reclist:
-                        print '推荐列表里有啊啊啊啊:'+item
                     if reclist:
                         try:
                             UserRec = self.db.query(User).filter(User.Uid.in_(reclist)).all()
                             for item in UserRec:
                                 uc = self.db.query(UserCollection).filter(UserCollection.UCuser == item.Uid).all()
-                                if uc[0]:  # 如果有作品集
+                                if uc:  # 如果有作品集
                                     retdata.append(Usermodel.rec_user_list(item))
                                 else:
                                     continue

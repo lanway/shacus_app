@@ -100,7 +100,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             #attention:因为返回新的
             appointments = self.db.query(Appointment). \
                 filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                       Appointment.APstatus != 2,Appointment.APgroup == group ,
+                       Appointment.APstatus != 2,or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
                        Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
                 limit(6).all()
             if appointments:
@@ -114,7 +114,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             try:
                 appointments = self.db.query(Appointment). \
                     filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                           Appointment.APstatus != 2, Appointment.APgroup == group,
+                           Appointment.APstatus != 2, or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
                            Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
                     all()
                 if appointments:
