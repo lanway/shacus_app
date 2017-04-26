@@ -3,7 +3,7 @@ import json
 
 import Userinfo.Ufuncs
 from BaseHandlerh import BaseHandler
-from Database.tables import AppointmentImage
+from Database.tables import AppointmentImage, Appointment
 from FileHandler.Upload import AuthKeyHandler
 from rongcloud import RongCloud
 
@@ -22,8 +22,7 @@ class Sysmessage(BaseHandler):
             fromuserid = self.get_argument('fromuserid')
             touserid = self.get_argument('touserid')
             objectname = 'RC:ImgTextMsg'
-            title = self.get_argument('title')
-            content_item = self.get_argument('content')
+            title = "有人想和你约拍"
             appid = self.get_argument('appid')
             url = 'www.baidu.com'
             extra = 'hello'
@@ -34,6 +33,8 @@ class Sysmessage(BaseHandler):
                 app = self.db.query(AppointmentImage).filter(AppointmentImage.APIapid == appid).all()
                 if app:
                     imageurl = app[0].APIurl
+                appitem = self.db.query(Appointment).filter(Appointment.APid == appid).one()
+                content_item = appitem.APcontent
                 content['title'] = title
                 content['content'] = content_item
                 content['imageUri'] = authkey_handler.download_originpic_url(imageurl)
@@ -44,19 +45,19 @@ class Sysmessage(BaseHandler):
                 if Response.result['code'] == 200:
                     content_sys = {"message":"您有一条新约拍","extra":""}
                     rcloud.Message.PublishSystem(fromuserid,touserid,'RC:InfoNtf',json.dumps(content_sys))
-                    self.retjson['code'] = '...'
-                    self.retjson['contents'] = '...'
+                    self.retjson['code'] = '11524'
+                    self.retjson['contents'] = '发送消息成功'
                 else:
                     print 'cucucucu'
-                    self.retjson['code'] = '...'
-                    self.retjson['contents'] = '...'
+                    self.retjson['code'] = '11523'
+                    self.retjson['contents'] = '发送消息错误'
 
             except Exception,e:
                 print e
-                self.retjson['code'] = '...'
-                self.retjson['contents'] = '...'
+                self.retjson['code'] = '11522'
+                self.retjson['contents'] = '服务器错误'
         else:
-            self.retjson['code'] = '10521'
+            self.retjson['code'] = '11521'
             self.retjson['contents'] = r'用户认证错误！操作失败'
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
 
