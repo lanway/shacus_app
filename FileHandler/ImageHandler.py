@@ -2,7 +2,7 @@
 import time
 
 from Database.models import get_db
-from Database.tables import UserImage,Image,AppointmentImage,ActivityImage, CompanionImg
+from Database.tables import UserImage,Image,AppointmentImage,ActivityImage, CompanionImg, WApCompanionImage
 
 '''
  创建者：兰威 黄鑫晨
@@ -126,24 +126,24 @@ class ImageHandler(object):
 # print timeStamp
 
     def insert_companion_image(self, list, Companion_id):  # 插入约拍伴侣图片
-        '''
+                    '''
 
-        Args:
-            list: 图片的名字的数组
-            ac_id: 约拍伴侣的id
+                    Args:
+                        list: 图片的名字的数组
+                        ac_id: 约拍伴侣的id
 
-        Returns:
+                    Returns:
 
-        '''
-        imagehandler = ImageHandler()
-        imids = imagehandler.insert(list)
-        for i in range(len(imids)):
-            image = CompanionImg(
-                Companionid=Companion_id,
-                Companionimid=imids[i],
-                CompanionImgurl=list[i],
-                CompanionValid=1
-            )
-            db = get_db()
-            db.merge(image)
-            db.commit()
+                    '''
+                    imagehandler = ImageHandler()
+                    imids = imagehandler.insert(list)
+                    for i in range(len(imids)):
+                        image = WApCompanionImage(
+                            WAPCid=Companion_id,
+                            WAPCimid=imids[i],
+                            WAPCurl=list[i],
+                            WAPCvalid=1
+                        )
+                        db = get_db()
+                        db.merge(image)
+                        db.commit()

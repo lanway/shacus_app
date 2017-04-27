@@ -6,7 +6,7 @@
 import time
 
 from Database.models import get_db
-from Database.tables import AppointLike, AppointmentImage, CompanionImg, User, AppointEntry
+from Database.tables import AppointLike, AppointmentImage, CompanionImg, User, AppointEntry, WApCompanionImage
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.Ufuncs import Ufuncs
 
@@ -185,17 +185,18 @@ class APmodelHandler(object):
         )
         retdata.append(m_ApInforesponse)
 
-    def ApCompanion(clas,Companion,retdata):
+
+    def ApCompanion(clas, Companion, retdata):
         auth = AuthKeyHandler()
-        Companion_imgs = get_db().query(CompanionImg).filter(CompanionImg.Companionid == Companion.ApCompanionid).all()
+        Companion_imgs = get_db().query(WApCompanionImage).filter(WApCompanionImage.WAPCid == Companion.WAPCid).all()
         Imgs = []
         for item in Companion_imgs:
-            Imgs.append(auth.download_url(item.CompanionImgurl))
+            Imgs.append(auth.download_url(item.WAPCurl))
         ApCompanion_model = dict(
-            CompanionId=Companion.ApCompanionid,
-            CompanionTitle=Companion. ApCtitle,
-            CompanionContent=Companion. ApCcontent,
-            CompanionUrl=Companion.ApCompanionurl,
+            CompanionId=Companion.WAPCid,
+            CompanionTitle=Companion.WAPCname,
+            CompanionContent=Companion.WAPCServeintro,
+            CompanionUrl=Companion.WAPCContact,
             CompanionPic=Imgs,
         )
         retdata.append(ApCompanion_model)

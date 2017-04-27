@@ -300,14 +300,6 @@ class RankScore(Base):
     RSMrank = Column(Integer, nullable=False, default=101)
     RSPrank = Column(Integer, nullable=False, default=101)
 
-class WeAcToken(Base):
-    '''
-    用于存放微信accesstoken
-    '''
-    __tablename__ = 'WeAcToken'
-    WACid = Column(Integer,primary_key=True)
-    WACtoken = Column(VARCHAR(512))
-    WACexpire = Column(Integer,nullable=False,default=0)
 
 class UserHomepageimg(Base):
     #用户个人图片展示
@@ -319,6 +311,7 @@ class UserHomepageimg(Base):
     UHpicvalid = Column(Integer, default=0)
     UHheight = Column(Integer,default=0)
     UHwidth = Column(Integer,default=0)
+
 
 class UserCollection(Base):
     #用户作品集
@@ -376,6 +369,33 @@ class CompanionImg(Base):
     Companionimid = Column(Integer, primary_key=True)
     CompanionImgurl = Column(VARCHAR(128))
     CompanionValid = Column(Integer, nullable=False, default=1)
+
+class WApCompanions(Base):
+    '''
+    @author:黄鑫晨
+    @name:约拍伴侣表
+    '''
+    __tablename__ = 'WApCompanions'
+    WAPCid = Column(Integer, primary_key=True)
+    WAPCname = Column(VARCHAR(64), nullable=False)   # 约拍伴侣名
+    WAPCOrganintro = Column(VARCHAR(128), nullable=False)  # 组织/个人介绍
+    WAPCServeintro = Column(VARCHAR(256), nullable=False)  # 提供服务介绍
+    WAPCContact = Column(VARCHAR(128), nullable=False)  # 联系方式
+    WAPCvalid = Column(Boolean, default=1, nullable=False)
+
+
+class WApCompanionImage(Base):
+    '''
+    @author:黄鑫晨
+    @name:约拍伴侣图片表
+    '''
+    __tablename__ = "WApCompanionImage"
+
+    WAPCid = Column(Integer, ForeignKey('WApCompanions.WAPCid', onupdate='CASCADE'))
+    WAPCimid = Column(Integer, primary_key=True)
+    WAPCurl = Column(VARCHAR(128))  # 约拍伴侣图片链接
+    WAPCvalid = Column(Boolean, default=1, nullable=False)
+
 
 
 
