@@ -1,10 +1,6 @@
 # -*- coding:utf-8 -*-
 import json
-import urllib
-import urllib2
 
-
-from Appointment.WAPmodel import WAPmodel
 
 from Appointment.APmodel import APmodelHandler
 from BaseHandlerh import BaseHandler
