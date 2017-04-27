@@ -18,7 +18,7 @@ from Appointment.APCreateHandler_new import APcreateHandler
 from Appointment.APRegistHandler import APregistHandler
 from Appointment.APchatCreateHandler import APchatCreateHandler
 from Appointment.APpraseHandler import APprase
-from Appointment.ApCompanion import ApCompanionHandler
+from Appointment.ApCompanionHandler import ApCompanionHandler
 from Appointment.Ranklist import Ranklist
 from Course.Chomepage import Chomepage
 from Course.CourseAsk import CourseAsk
