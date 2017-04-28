@@ -29,7 +29,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             #attention:< ，因为返回新的
             appointments = self.db.query(Appointment). \
                 filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                       Appointment.APstatus != 2,
+                       Appointment.APstatus == 0,
                        Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
                 limit(6).all()
             if appointments:
@@ -43,7 +43,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             try:
                 appointments = self.db.query(Appointment). \
                     filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                           Appointment.APstatus != 2,
+                           Appointment.APstatus == 0,
                            Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
                     all()
                 if appointments:
@@ -100,7 +100,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             #attention:因为返回新的
             appointments = self.db.query(Appointment). \
                 filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                       Appointment.APstatus != 2,or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
+                       Appointment.APstatus == 0,or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
                        Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
                 limit(6).all()
             if appointments:
@@ -114,7 +114,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             try:
                 appointments = self.db.query(Appointment). \
                     filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                           Appointment.APstatus != 2, or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
+                           Appointment.APstatus == 0, or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
                            Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
                     all()
                 if appointments:
@@ -143,7 +143,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     if int(ap_group)/10 != 0:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                   Appointment.APstatus != 2, Appointment.APgroup == groupid).\
+                                   Appointment.APstatus == 0, Appointment.APgroup == groupid).\
                             order_by(desc(Appointment.APid)).limit(6).all()
                         APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                         self.retjson['code'] = '10251'
@@ -151,7 +151,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     else:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                   Appointment.APstatus != 2, or_(Appointment.APgroup.like("{}%".format(groupid)),Appointment.APgroup.like("%{}".format(groupid)))). \
+                                   Appointment.APstatus == 0, or_(Appointment.APgroup.like("{}%".format(groupid)),Appointment.APgroup.like("%{}".format(groupid)))). \
                             order_by(desc(Appointment.APid)).limit(6).all()
                         APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                         self.retjson['code'] = '10251'
@@ -165,7 +165,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     if int(ap_group) / 10 != 0:
                             appointments = self.db.query(Appointment). \
                                 filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                       Appointment.APstatus != 2 , Appointment.APgroup == groupid).\
+                                       Appointment.APstatus == 0 , Appointment.APgroup == groupid).\
                             order_by(desc(Appointment.APid)).limit(6).all()
                             APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                             self.retjson['code'] = '10252'
@@ -173,7 +173,7 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
                     else:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                   Appointment.APstatus != 2, or_(Appointment.APgroup.like("{}%".format(groupid)),Appointment.APgroup.like("%{}".format(groupid)))). \
+                                   Appointment.APstatus == 0, or_(Appointment.APgroup.like("{}%".format(groupid)),Appointment.APgroup.like("%{}".format(groupid)))). \
                             order_by(desc(Appointment.APid)).limit(6).all()
                         APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                         self.retjson['code'] = '10252'
