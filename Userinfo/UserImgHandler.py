@@ -200,6 +200,40 @@ class UserImgHandler(object):
                 height=item.UCIheight/6,
             )
             imgsimple.append(img_info)
+
+        UserList = []
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).limit(10).all()
+        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
+        if uclikepeople:
+            for item in uclikepeople:
+                newid = item.UClikeUserid
+                userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
+                UClikeModel = dict(
+                    userid=newid,
+                    userheadimg=authkeyhandler.download_url(userimg[0].UIurl)
+                )
+                UserList.append(UClikeModel)
+        else:
+            UClikeModel = dict(
+                userid='还没有人点过赞',
+                userheadimg=''
+            )
+            UserList.append(UClikeModel)
+        UClikeNum = 0  # 计算作品集点赞人数
+        if uclikepeoplenum:
+            for item in uclikepeoplenum:
+                UClikeNum += 1
+        else:
+            UClikeNum = 0
+
+        # 是否已经点赞
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+                                             UClike.UCLvalid == 1).all()
+        if like:
+            isliked = 1
+        else:
+            isliked = 0
+
         ret_uc = dict(
             UCid=UCsample.UCid,
             UCuser=uid,
@@ -208,6 +242,9 @@ class UserImgHandler(object):
             UCcontent=UCsample.UCcontent,
             UCimg=img,                  # 大图url
             UCsimpleimg=imgsimple,      # 缩略图url
+            UserlikeList=UserList,  # 点赞人列表
+            UserlikeNum=UClikeNum,   # 点赞人数
+            UserIsLiked=isliked,
         )
         return ret_uc
 
@@ -275,7 +312,7 @@ class UserImgHandler(object):
     '''
     这是作品集列表中------单条信息的返回 包括发布人的Model 上面的UC_simple_model暂时先不用
     '''
-    def UC_login_model(self,UCsample, uid):  # UCsample是一个UserCollection对象
+    def UC_login_model(self, UCsample, uid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         # UserPublishModel:获取作品集发布人的model
         try:
@@ -322,14 +359,13 @@ class UserImgHandler(object):
                 num += 1
         else:
             num = 0
-
         # 获取三张缩略图
         imgsimple = []
         if ucimg:
             for item in ucimg:
                 ucimgurl = item.UCIurl
                 img_info = dict(
-                    imageUrl=authkeyhandler.download_abb_url(ucimgurl),
+                    imageUrl=authkeyhandler.download_assign_url(ucimgurl, 200, 200),
                     width=item.UCIwidth/6,
                     height=item.UCIheight/6,
                 )
@@ -346,10 +382,10 @@ class UserImgHandler(object):
         if uclikepeople:
             for item in uclikepeople:
                 newid = item.UClikeUserid
-                userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).one()
+                userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
                 UClikeModel = dict(
                     userid=newid,
-                    userheadimg=authkeyhandler.download_url(userimg.UIurl)
+                    userheadimg=authkeyhandler.download_url(userimg[0].UIurl)
                 )
                 UserList.append(UClikeModel)
         else:
@@ -370,6 +406,7 @@ class UserImgHandler(object):
             isliked = 1
         else:
             isliked = 0
+
         try:
             ret_uc = dict(
                 UCid=UCsample.UCid,
