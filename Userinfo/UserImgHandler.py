@@ -226,6 +226,14 @@ class UserImgHandler(object):
         else:
             UClikeNum = 0
 
+        # 是否已经点赞
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+                                             UClike.UCLvalid == 1).all()
+        if like:
+            isliked = 1
+        else:
+            isliked = 0
+
         ret_uc = dict(
             UCid=UCsample.UCid,
             UCuser=uid,
@@ -236,6 +244,7 @@ class UserImgHandler(object):
             UCsimpleimg=imgsimple,      # 缩略图url
             UserlikeList=UserList,  # 点赞人列表
             UserlikeNum=UClikeNum,   # 点赞人数
+            UserIsLiked=isliked,
         )
         return ret_uc
 
