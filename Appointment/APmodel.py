@@ -6,7 +6,8 @@
 import time
 
 from Database.models import get_db
-from Database.tables import AppointLike, AppointmentImage, CompanionImg, User, AppointEntry, WApCompanionImage
+from Database.tables import AppointLike, AppointmentImage, CompanionImg, User, AppointEntry, WApCompanionImage, \
+    AppointmentInfo, UserImage
 from FileHandler.Upload import AuthKeyHandler
 from Userinfo.Ufuncs import Ufuncs
 
@@ -106,6 +107,7 @@ class APmodelHandler(object):
         ap_regist_users = []
         registed = 0
         liked = 0
+        commented = 0
         try:
             likedentry = get_db().query(AppointLike).filter(AppointLike.ALuid == userid,
                                                             AppointLike.ALapid == appointment.APid,
@@ -130,6 +132,17 @@ class APmodelHandler(object):
                                                          == userid,AppointEntry.AEapid == appointment.APid,AppointEntry.AEvalid == 1 ).all()
             if exist:
                 registed = 1
+            if appointment.APstatus == 3:
+                appointmentinfo = get_db().query(AppointmentInfo).filter(
+                    AppointmentInfo.AIappoid == appointment.APid).one()
+                if int(userid) == appointmentinfo.AIpid:
+                    if appointmentinfo.AIpcomment:
+                        commented = 1
+                if int(userid) == appointmentinfo.AImid:
+                    if appointmentinfo.AImcomment:
+                        commented = 1
+            if appointment.APstatus == 4:
+                commented = 1
             m_response = dict(
                 APid=appointment.APid,
                 # APtitle=appointment.APtitle,
@@ -161,7 +174,32 @@ class APmodelHandler(object):
                 Userlocation=user.Ulocation,
                 Usex=user_sex,
                 Useregistd=registed,
+                Usercommented=commented,
             )
+            if appointment.APstatus == 4: # 状态为4是返回两边的评价
+                appointmentinfo = get_db().query(AppointmentInfo).filter(AppointmentInfo.AIappoid == appointment.APid).one()
+                user_p_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AIpid)
+                user_m_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AIpid)
+                user_p = get_db().query(User).filter(User.Uid == appointmentinfo.AIpid ).one()
+                user_m = get_db().query(User).filter(User.Uid == appointmentinfo.AImid ).one()
+                comment_p = dict(
+                        uid=appointmentinfo.AIpid,
+                        ucomment=appointmentinfo.AIpcomment,
+                        uscore=appointmentinfo.AIpscore,
+                        uheadimage=user_p_headimage,
+                        ualias=user_p.Ualais
+                )
+                comment_m = dict(
+                    uid = appointmentinfo.AImid,
+                    ucomment=appointmentinfo.AImcomment,
+                    uscore=appointmentinfo.AImscore,
+                    uheadimage=user_m_headimage,
+                    ualias=user_m.Ualais
+                )
+                comment = []
+                comment.append(comment_p)
+                comment.append(comment_m)
+                m_response['comment'] = comment
             return m_response
         except Exception, e:
             print e,'dff'

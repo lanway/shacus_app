@@ -144,18 +144,35 @@ class UserIndent(BaseHandler):
                             self.retjson['code'] = '10260'
                             self.retjson['contents'] = u'该用户无结束权限！！'
 
-                    elif appointment.APstatus == 2:  # 已完成
+                    elif appointment.APstatus > 1:  # 已完成
                         self.retjson['code'] = '10260'
                         self.retjson['contents'] = u'该约拍已结束！'
                 except Exception, e:
                     print e
                     self.retjson['code'] = '10261'
                     self.retjson['contents'] = u'未找到该约拍记录！'
-            # # 用户结束订单并评价
-            # elif type == '10908':
-            #     score = self.get_argument('score')
-            #     comment = self.get_argument('comment')
-            #     apid = self.get_argument('apid')
+
+            # 用户评价约拍
+            elif type == '10908':
+                score = self.get_argument('score')
+                comment = self.get_argument('comment')
+                ap_id = self.get_argument('apid')
+                try:
+                    appointment = self.db.query(Appointment).filter(Appointment.APid == ap_id).one()
+                    appointmentinfo = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_id).one()
+                    if appointment.APstatus > 1:
+                        if int(u_id) == appointmentinfo.AImid:
+                            self.evaluate_appointment(0,appointment,appointmentinfo,comment,score)
+                        elif int(u_id) == appointmentinfo.AIpid:
+                            self.evaluate_appointment(1, appointment,appointmentinfo, comment, score)
+                        else:
+                            self.retjson['code'] = '10982'
+                            self.retjson['contents'] = '您没有对该约拍评价的权限'
+                except Exception,e:
+                    print e
+                    self.retjson['code'] = '10983'
+                    self.retjson['contents'] = '未查询到该约拍'
+
 
 
 
@@ -260,6 +277,42 @@ class UserIndent(BaseHandler):
             print e
             self.retjson['code'] = '10961'
             self.retjson['contents'] = '此活动不是你发起的，无法操作'
+
+    def evaluate_appointment(self,type,appointment,appointmentinfo,comment,score): # 对约拍进行评价
+        '''
+        
+        Args:
+            type: 约拍的类型 
+            appointmentinfo: 具体的某个约拍 
+            comment: 评论
+            score: 评分
+
+        Returns:
+
+        '''
+        if type == 0:
+            if appointmentinfo.AImcomment:
+                self.retjson['code'] = '10981'
+                self.retjson['contents'] = '您已经评价过该约拍，不可再次评价'
+            else:
+                appointmentinfo.AImcomment = comment
+                appointmentinfo.AImscore = score
+                appointment.APstatus+=1
+                self.db.commit()
+                self.retjson['code'] = '10908'
+                self.retjson['contents'] = '评价成功'
+        if type == 1:
+            if appointmentinfo.AIpcomment:
+                self.retjson['code'] = '10981'
+                self.retjson['contents'] = '您已经评价过该约拍，不可再次评价'
+            else:
+                appointmentinfo.AIpcomment = comment
+                appointmentinfo.AIpscore = score
+                appointment.APstatus += 1
+                self.db.commit()
+                self.retjson['code'] = '10908'
+                self.retjson['contents'] = '评价成功'
+
 
 
 

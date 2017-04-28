@@ -3,6 +3,8 @@
 @author:黄鑫晨
 #create_time:2016-09-01
 '''
+from sqlalchemy import desc
+
 from Database.models import get_db
 from Database.tables import User, AppointEntry, UserImage, Image
 from FileHandler.Upload import AuthKeyHandler
@@ -149,7 +151,7 @@ class Ufuncs(object):
     def get_registids_from_appointment(appointment):
         userids = []
         try:
-            #get_db().query(AppointEntry.AEregisterID).filter(appointment.APid == )
+            # get_db().query(AppointEntry.AEregisterID).filter(appointment.APid == )
             apid = appointment.APid
             registids = get_db().query(AppointEntry.AEregisterID).filter(AppointEntry.AEapid == apid).all()
             for user in registids:
@@ -160,7 +162,7 @@ class Ufuncs(object):
         return userids
 
     @staticmethod
-    def get_user_headimage_intent_from_userid(userid):
+    def get_user_headimage_intent_from_userid(userid): # 通过用户id获取用户头像
         user_intent = ''
         authkey_handler = AuthKeyHandler()
         try:
