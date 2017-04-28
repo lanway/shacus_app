@@ -1,4 +1,6 @@
 # coding=utf-8
+import time
+
 from Database.models import get_db
 from Database.tables import UserImage, Image, User, UserCollectionimg, UserCollection
 from FileHandler.ImageHandler import ImageHandler
@@ -106,11 +108,14 @@ def rec_user_list(user):
         uc_all_pic = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == uc_list[0].UCid).limit(5).all()
         for item in uc_all_pic:
             piclist.append(imghandler.download_url(item.UCIurl))
+        user_bir = user.Ubirthday.strftime('%Y')  # 获取用户生日（年）
+        now = time.strftime('%Y', time.localtime(time.time()))  # 获取当前年份
+        user_age = int(now) - int(user_bir)  # 用户年龄
         usermodel = dict(
             id=user.Uid,  # 用户id
             phone=user.Utel,  # 用户手机号
             nickName=user.Ualais,  # 用户名
-            age=user.Uage,  # 用户年龄
+            age=user_age,  # 用户年龄
             sex=int(user.Usex),  # 用户性别
             Ucategory=user.Ucategory,    # 用户类型
         )
