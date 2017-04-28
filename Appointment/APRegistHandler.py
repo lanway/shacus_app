@@ -42,7 +42,7 @@ class APregistHandler(BaseHandler):  # 报名约拍
                             appointment.APregistN += 1
                             self.db.commit()
                             self.retjson['contents'] = '报名成功'
-                            self.retjson['code'] = '10273'
+                            self.retjson['code'] = '10270'
                     except Exception, e:
                         print e
                         print "插入之前"

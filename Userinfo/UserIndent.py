@@ -124,12 +124,18 @@ class UserIndent(BaseHandler):
                 ap_id = self.get_argument('apid')
                 try:
                     appointment = self.db.query(Appointment).filter(Appointment.APid == ap_id).one()
+                    appointmentinfo = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_id).one()
                     if appointment.APstatus == 0:  # 报名中
                         self.retjson['code'] = '10260'
                         self.retjson['contents'] = u'该约拍尚在报名中，无法结束！'
 
                     elif appointment.APstatus == 1:  # 进行中
-                        if int(u_id) == appointment.APsponsorid:
+                        if int(u_id) == appointmentinfo.AIpid:
+                            appointment.APstatus = 2
+                            self.db.commit()
+                            self.retjson['code'] = '10258'
+                            self.retjson['contents'] = u'成功结束约拍！'
+                        elif int(u_id) == appointmentinfo.AImid:
                             appointment.APstatus = 2
                             self.db.commit()
                             self.retjson['code'] = '10258'
