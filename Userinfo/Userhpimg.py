@@ -277,7 +277,7 @@ class Userhpimg(BaseHandler):
                 retjson['code'] = '10827'
                 retjson['contents'] = '未找到此用户'
 
-        #作品集添加图片step1
+        # 作品集添加图片step1
         elif type == '10822':
             retjson = {'code': '', 'contents': ""}
             u_id = self.get_argument('uid')
