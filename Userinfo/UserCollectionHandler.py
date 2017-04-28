@@ -67,7 +67,7 @@ class UserCollectionHandler(BaseHandler):
                                 self.retjson['contents'] = '点赞成功'
                     except Exception, e:
                         print e
-                        self.retjson['code'] = '10843'
+                        self.retjson['code'] = '10813'
                         self.retjson['contents'] = '未找到此作品集'
                 else:
                     print'认证错误'
