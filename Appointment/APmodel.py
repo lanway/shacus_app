@@ -66,12 +66,12 @@ class APmodelHandler(object):
                                                              AppointLike.ALvalid == 1).one()  # 寻找是否点过赞
             if likedentry:
                 liked = 1
-                print "点过赞", liked
+                #print "点过赞", liked
         except Exception, e:
               print e
               liked = 0
         # todo:userliked不对
-        print '得到Url前'
+        #print '得到Url前'
         apimgurls = APmodelHandler.ap_get_imgs_from_apid(appointment.APid)
         headimage = Ufuncs.get_user_headimage_intent_from_userid(appointment.APsponsorid)
         user_id = appointment.APsponsorid     # 创建者的id
@@ -114,7 +114,7 @@ class APmodelHandler(object):
                                                             AppointLike.ALvalid == 1).one()  # 寻找是否点过赞
             if likedentry:
                 liked = 1
-                print "点过赞", liked
+                #print "点过赞", liked
         except Exception, e:
             print e
             liked = 0
