@@ -389,11 +389,7 @@ class UserImgHandler(object):
                 )
                 UserList.append(UClikeModel)
         else:
-            UClikeModel = dict(
-                userid='还没有人点过赞',
-                userheadimg=''
-            )
-            UserList.append(UClikeModel)
+            UserList = []
         UClikeNum = 0   # 计算作品集点赞人数
         if uclikepeoplenum:
             for item in uclikepeoplenum:
