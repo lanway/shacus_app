@@ -178,8 +178,8 @@ class AppointmentInfo(Base):
     AIid = Column(Integer,primary_key=True)
     AImid = Column(Integer,ForeignKey('User.Uid', ondelete='CASCADE'))
     AIpid = Column(Integer,ForeignKey('User.Uid', ondelete='CASCADE'))
-    AImscore = Column(Integer,default=0)
-    AIpscore = Column(Integer,default=0)
+    AImscore = Column(Float,default=0)
+    AIpscore = Column(Float,default=0)
     AImcomment = Column(VARCHAR(128))
     AIpcomment = Column(VARCHAR(128))
     AIappoid = Column(Integer,ForeignKey('Appointment.APid',onupdate='CASCADE')) # 与AIid相同，是否重复？

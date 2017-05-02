@@ -168,6 +168,9 @@ class UserIndent(BaseHandler):
                         else:
                             self.retjson['code'] = '10982'
                             self.retjson['contents'] = '您没有对该约拍评价的权限'
+                    else:
+                        self.retjson['code'] = '10982'
+                        self.retjson['contents'] = '您没有对该约拍评价的权限'
                 except Exception,e:
                     print e
                     self.retjson['code'] = '10983'
@@ -186,22 +189,38 @@ class UserIndent(BaseHandler):
         ret_activity=[]
         ac_enteys = self.db.query(ActivityEntry).filter(ActivityEntry.ACEregisterid == u_id,
                                                         ActivityEntry.ACEregisttvilid == True).all()
-
-        for ac_entey in ac_enteys:
-           ac_id = ac_entey.ACEacid
-           ac_info = self.db.query(Activity).filter(Activity.ACid == ac_id,
-                                                 Activity.ACstatus == number,Activity.ACvalid == 1).all()
-           url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
-           if ac_info:
-               if url :
-                ret_activity.append(ACmodelHandler.ac_Model_simply(ac_info[0],url[0].ACIurl))
-        ac_mentrys = self.db.query(Activity).filter(Activity.ACsponsorid == u_id,Activity.ACvalid == 1,
-                                                    Activity.ACstatus == number).all()
-        for ac_mentry in ac_mentrys:
-            ac_id = ac_mentry.ACid
-            url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
-            if url:
-                ret_activity.append(ACmodelHandler.ac_Model_simply(ac_mentry, url[0].ACIurl))
+        if number == 2:
+            for ac_entey in ac_enteys:
+               ac_id = ac_entey.ACEacid
+               ac_info = self.db.query(Activity).filter(Activity.ACid == ac_id,
+                                                     Activity.ACstatus >= number,Activity.ACvalid == 1).all()
+               url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
+               if ac_info:
+                   if url :
+                    ret_activity.append(ACmodelHandler.ac_Model_simply(ac_info[0],url[0].ACIurl))
+            ac_mentrys = self.db.query(Activity).filter(Activity.ACsponsorid == u_id,Activity.ACvalid == 1,
+                                                        Activity.ACstatus >= number).all()
+            for ac_mentry in ac_mentrys:
+                ac_id = ac_mentry.ACid
+                url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
+                if url:
+                    ret_activity.append(ACmodelHandler.ac_Model_simply(ac_mentry, url[0].ACIurl))
+        else:
+            for ac_entey in ac_enteys:
+                ac_id = ac_entey.ACEacid
+                ac_info = self.db.query(Activity).filter(Activity.ACid == ac_id,
+                                                         Activity.ACstatus == number, Activity.ACvalid == 1).all()
+                url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
+                if ac_info:
+                    if url:
+                        ret_activity.append(ACmodelHandler.ac_Model_simply(ac_info[0], url[0].ACIurl))
+            ac_mentrys = self.db.query(Activity).filter(Activity.ACsponsorid == u_id, Activity.ACvalid == 1,
+                                                        Activity.ACstatus == number).all()
+            for ac_mentry in ac_mentrys:
+                ac_id = ac_mentry.ACid
+                url = self.db.query(ActivityImage).filter(ActivityImage.ACIacid == ac_id).limit(1).all()
+                if url:
+                    ret_activity.append(ACmodelHandler.ac_Model_simply(ac_mentry, url[0].ACIurl))
         return ret_activity
 
 
@@ -216,26 +235,42 @@ class UserIndent(BaseHandler):
             ap_e_entrys = self.db.query(AppointEntry).filter(AppointEntry.AEregisterID == u_id,
                                                                  AppointEntry.AEvalid == True,
                                                                  AppointEntry.AEchoosed ==True).all()
-
-        for ap_e_entry in ap_e_entrys:
-            ap_id = ap_e_entry.AEapid
-            try :
-               ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,Appointment.APstatus == number).all()
-            except Exception,e:
-                print e
-            if ap_e_info:
-                ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0],u_id))
+        if number == 2:
+            for ap_e_entry in ap_e_entrys:
+                ap_id = ap_e_entry.AEapid
+                try :
+                   ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,Appointment.APstatus >= number).all()
+                except Exception,e:
+                    print e
+                if ap_e_info:
+                    ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0],u_id))
+        else:
+            for ap_e_entry in ap_e_entrys:
+                ap_id = ap_e_entry.AEapid
+                try :
+                   ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,Appointment.APstatus == number).all()
+                except Exception,e:
+                    print e
+                if ap_e_info:
+                    ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0],u_id))
 
         return ret_e_appointment
 
     def get_my_appointment(self,u_id,number):
         ap_my_entrys = []
         ret_my_appointment =[]
-        try:
-            ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,Appointment.APstatus == number).all()
-        except Exception,e:
-            print e
-        ret_my_appointment = APmodelHandler.ap_Model_simply(ap_my_entrys, ret_my_appointment,u_id)
+        if number == 2:
+            try:
+                ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,Appointment.APstatus >= number).all()
+            except Exception,e:
+                print e
+            ret_my_appointment = APmodelHandler.ap_Model_simply(ap_my_entrys, ret_my_appointment,u_id)
+        else:
+            try:
+                ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,Appointment.APstatus == number).all()
+            except Exception,e:
+                print e
+            ret_my_appointment = APmodelHandler.ap_Model_simply(ap_my_entrys, ret_my_appointment,u_id)
         return ret_my_appointment
 
     def finnish_activity_register(self,u_id,ac_id):     #结束活动报名
