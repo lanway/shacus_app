@@ -255,7 +255,7 @@ class UserImgHandler(object):
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).all()
         if ucimg:
-            coverurl = authkeyhandler.download_assign_url(ucimg[0].UCIurl, 200, 200)   # 选取第一张作为封面(缩略图)
+            coverurl = authkeyhandler.download_url(ucimg[0].UCIurl)   # 选取第一张作为封面(缩略图)
             img_info = dict(
                 imageUrl=coverurl,
                 width=ucimg[0].UCIwidth/2,
@@ -384,8 +384,8 @@ class UserImgHandler(object):
                 newid = item.UClikeUserid
                 userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
                 UClikeModel = dict(
-                    userid=newid,
-                    userheadimg=authkeyhandler.download_url(userimg[0].UIurl)
+                    id=newid,
+                    headImage=authkeyhandler.download_url(userimg[0].UIurl)
                 )
                 UserList.append(UClikeModel)
         else:
