@@ -370,6 +370,7 @@ class CompanionImg(Base):
     CompanionImgurl = Column(VARCHAR(128))
     CompanionValid = Column(Integer, nullable=False, default=1)
 
+
 class WApCompanions(Base):
     '''
     @author:黄鑫晨
@@ -395,6 +396,16 @@ class WApCompanionImage(Base):
     WAPCimid = Column(Integer, primary_key=True)
     WAPCurl = Column(VARCHAR(128))  # 约拍伴侣图片链接
     WAPCvalid = Column(Boolean, default=1, nullable=False)
+
+
+class WAcAuth(Base):
+    # 记录约拍伴侣发布码
+    __tablename__ = 'WAcAuth'
+
+    WAAid = Column(Integer, primary_key=True)
+    WAauth = Column(VARCHAR(32), nullable=False)
+    WAAacid = Column(Integer, ForeignKey('WApCompanions.WAPCid', onupdate='CASCADE'))  # 伴侣ID
+    WAAused = Column(Boolean, nullable=False, default=0)  # 为0则未用， 1则用过
 
 
 
