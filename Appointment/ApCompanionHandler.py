@@ -15,67 +15,39 @@ class ApCompanionHandler(BaseHandler):
     def post(self):
         type = self.get_argument('type')
         if type == '10900':   # 发布约拍伴侣
-            auth = self.get_argument('auth')
-            # 判断是否有权限
-            try:
-                exist = self.db.query(WAcAuth).filter(WAcAuth.WAauth == auth).one()
-                # 有该认证
-                if exist:
-                    #  已经被使用
-                    if exist.WAAused == 1:
-                        self.retjson['code'] = '10902'
-                        self.retjson['contents'] = "该权限已被其他活动使用，请重新申请"
-                    # 未被使用，可以使用
-                    else:
-                # 标注为使用过
-                        ApcTitle = self.get_argument('title')
-                        ApOrc = self.get_argument('orgnazation')
-                        ApcContent = self.get_argument('content')
-                        ApcUrl = self.get_argument('companionUrl')
-                        Apcimg = self.get_arguments('companionImgs[]', strip=True)
+            ApcTitle = self.get_argument('title')
+            ApOrc = self.get_argument('orgnazation')
+            ApcContent = self.get_argument('content')
+            ApcUrl = self.get_argument('companionUrl')
+            Apcimg = self.get_arguments('companionImgs[]', strip=True)
 
-                        new_ApCompanion = WApCompanions(
+            new_ApCompanion = WApCompanions(
                             WAPCname=ApcTitle,
                             WAPCServeintro=ApcContent,  # 服务内容介绍
                             WAPCOrganintro=ApOrc,
                             WAPCvalid=1,
                             WAPCContact=ApcUrl,
-                            )
-                        exist.WAAused = 1
-                        self.db.merge(new_ApCompanion)
-                        self.db.commit()
-                        try:
-                            OneCompanion = self.db.query(WApCompanions).filter(WApCompanions.WAPCname == ApcTitle,
+            )
+
+            self.db.merge(new_ApCompanion)
+            self.db.commit()
+            try:
+                    OneCompanion = self.db.query(WApCompanions).filter(WApCompanions.WAPCname == ApcTitle,
                                                                     WApCompanions.WAPCServeintro == ApcContent,
                                                                     WApCompanions.WAPCContact == ApcUrl,
                                                                     WApCompanions.WAPCvalid == 1).one()
-                            image = ImageHandler()
-                            image.insert_companion_image(Apcimg, OneCompanion.WAPCid)
-                            self.db.commit()
-                            self.retjson['code'] = '10900'
-                            self.retjson['contents'] = '约拍伴侣创建成功'
-                        except Exception, e:
-                            print e
-                            self.retjson['code']='10901'
-                            self.retjson['contents']='创建失败'
+                    image = ImageHandler()
+                    image.insert_companion_image(Apcimg, OneCompanion.WAPCid)
+                    self.db.commit()
+                    self.retjson['code'] = '10900'
+                    self.retjson['contents'] = '约拍伴侣创建成功'
             except Exception, e:
-                print e
-                self.retjson['code'] = '10902'
-                self.retjson['contents'] = '权限不存在，请获取权限'
+                    print e
+                    self.retjson['code']='10901'
+                    self.retjson['contents']='创建失败'
 
-        # elif type == '10902':  # 删除一个约拍伴侣
-        #     Companion_id = self.get_argument('CompanionId')
-        #     try:
-        #         Companion_to_delete = self.db.query(ApCompanion).filter(ApCompanion.ApCompanionid == Companion_id).one()
-        #         Companion_to_delete.ApCompanionValid = 0
-        #         self.db.commit()
-        #         self.retjson['code']='10902'
-        #         self.retjson['contents']='删除成功'
-        #     except Exception, e:
-        #         print e
-        #         self.retjson['code']='10903'
-        #         self.retjson['contents']= '查找约拍伴侣失败'
-        elif type == '10904':# 返回约拍伴侣
+        elif type == '10904':
+            # 返回约拍伴侣
             retdata = []
             Companion_all = self.db.query(WApCompanions).filter(WApCompanions.WAPCvalid == 1).all()
             modelhandler = APmodelHandler()
