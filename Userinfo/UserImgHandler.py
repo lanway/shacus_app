@@ -209,16 +209,12 @@ class UserImgHandler(object):
                 newid = item.UClikeUserid
                 userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
                 UClikeModel = dict(
-                    userid=newid,
-                    userheadimg=authkeyhandler.download_url(userimg[0].UIurl)
+                    id=newid,
+                    headImage=authkeyhandler.download_url(userimg[0].UIurl)
                 )
                 UserList.append(UClikeModel)
         else:
-            UClikeModel = dict(
-                userid='还没有人点过赞',
-                userheadimg=''
-            )
-            UserList.append(UClikeModel)
+           UserList=[]
         UClikeNum = 0  # 计算作品集点赞人数
         if uclikepeoplenum:
             for item in uclikepeoplenum:
