@@ -11,12 +11,12 @@ reload(sys)
 sys.setdefaultencoding('utf8')  # python的str默认是ascii编码，和unicode编码冲突,需处理
 
 
-#DB_CONNECT_STRING = 'mysql+mysqldb://root:ydrs.sql.7234@114.215.16.151:3306/Shacus?charset=utf8'
+DB_CONNECT_STRING = 'mysql+mysqldb://root:ydrs.sql.7234@114.215.16.151:3306/Shacus?charset=utf8'
 
 
 #DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1:3307/shacustest?charset=utf8'
 
-DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1/shacustest?charset=utf8'
+#DB_CONNECT_STRING = 'mysql+mysqldb://root@127.0.0.1/shacustest?charset=utf8'
 
 pool = redis.ConnectionPool(host='114.215.16.151', port=6379,password='ydrs.redis.7234')
 redis_engine = redis.Redis(connection_pool=pool)
