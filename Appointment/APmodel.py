@@ -98,7 +98,7 @@ class APmodelHandler(object):
                 Usex=user_sex,
                 APcontent=appointment.APcontent,
                 APgroup=appointment.APgroup,
-                sponsorid=user_id,
+                sponsorid=int(user_id),
                 )
         return ret_ap
 
@@ -176,7 +176,7 @@ class APmodelHandler(object):
                 Usex=user_sex,
                 Useregistd=registed,
                 Usercommented=commented,
-                sponsorid=user_id,
+                sponsorid=int(user_id),
             )
             if appointment.APstatus == 4:  # 状态为4时返回两边的评价
                 appointmentinfo = get_db().query(AppointmentInfo).filter(AppointmentInfo.AIappoid == appointment.APid).one()
