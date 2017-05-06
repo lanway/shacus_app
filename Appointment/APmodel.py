@@ -176,7 +176,7 @@ class APmodelHandler(object):
                 Useregistd=registed,
                 Usercommented=commented,
             )
-            if appointment.APstatus == 4: # 状态为4是返回两边的评价
+            if appointment.APstatus == 4:  # 状态为4时返回两边的评价
                 appointmentinfo = get_db().query(AppointmentInfo).filter(AppointmentInfo.AIappoid == appointment.APid).one()
                 user_p_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AIpid)
                 user_m_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AImid)

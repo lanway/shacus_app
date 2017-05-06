@@ -56,6 +56,15 @@ class UserIndent(BaseHandler):
                 self.retjson['code'] = '10394'
                 self.retjson['contents'] = ret_contents
 
+            elif type == '10909':    # 查看我的已经完成评价的约拍 这里没有活动了，因为活动没有状态码4
+
+                ret_e_appointment = self.get_e_appointment(u_id, 4)
+                ret_contents['entryappointment'] = ret_e_appointment
+                ret_my_appointment = self.get_my_appointment(u_id, 4)
+                ret_contents['myappointment'] = ret_my_appointment
+                self.retjson['code'] = '10395'
+                self.retjson['contents'] = ret_contents
+
             elif type == '10904':  # 选择约拍对象
                 apid = self.get_argument('apid')
                 chooseuid = self.get_argument('chooseduid')
@@ -239,7 +248,7 @@ class UserIndent(BaseHandler):
             for ap_e_entry in ap_e_entrys:
                 ap_id = ap_e_entry.AEapid
                 try :
-                   ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,Appointment.APstatus >= number).all()
+                   ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_id,Appointment.APstatus >= number,Appointment.APstatus <= number+1).all()
                 except Exception,e:
                     print e
                 if ap_e_info:
@@ -261,7 +270,7 @@ class UserIndent(BaseHandler):
         ret_my_appointment =[]
         if number == 2:
             try:
-                ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,Appointment.APstatus >= number).all()
+                ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,Appointment.APstatus >= number,Appointment.APstatus <= number+1).all()
             except Exception,e:
                 print e
             ret_my_appointment = APmodelHandler.ap_Model_simply(ap_my_entrys, ret_my_appointment,u_id)
