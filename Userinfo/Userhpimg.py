@@ -370,7 +370,7 @@ class Userhpimg(BaseHandler):
                 userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()
                 try:
                     pic = self.db.query(UserCollection).filter(UserCollection.UCid == uc_id).one()
-                    if int(pic.UCuser) == int(u_id):
+                    if int(userid.Uid) == int(u_id):
                         isself = 0
                     else:
                         isself = 1
