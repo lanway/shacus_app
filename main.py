@@ -18,6 +18,7 @@ from Appointment.APCreateHandler_new import APcreateHandler
 from Appointment.APRegistHandler import APregistHandler
 from Appointment.APchatCreateHandler import APchatCreateHandler
 from Appointment.APpraseHandler import APprase
+from Appointment.ApCompanionAuthHandler import AcAuthHandler
 from Appointment.ApCompanionHandler import ApCompanionHandler
 from Appointment.Ranklist import Ranklist
 from Course.Chomepage import Chomepage
@@ -79,8 +80,9 @@ class Application(tornado.web.Application):
              (r"/Userinfo/imghandler",Userhpimg),
              (r"/Userinfo/CollectionHandler",UserCollectionHandler),
              (r"/appointment/companion",ApCompanionHandler),
-            (r"/sysmessage",Sysmessage),
+             (r"/sysmessage",Sysmessage),
              (r"/recommend/reclist",UserList),
+             (r"/companion/getauth", AcAuthHandler),
         ]
         tornado.web.Application.__init__(self, handlers)
         self.db = scoped_session(sessionmaker(bind=engine,

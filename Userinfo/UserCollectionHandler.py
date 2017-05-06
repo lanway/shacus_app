@@ -35,7 +35,7 @@ class UserCollectionHandler(BaseHandler):
                                         once_liked.UCLvalid = 0
                                         User_Collection.UClikeNum -= 1
                                         self.db.commit()
-                                        self.retjson['code'] = '10842'
+                                        self.retjson['code'] = '10843'
                                         self.retjson['contents'] = r'取消赞成功'
 
                                 else:  # 点过赞但是取消了once_liked.UCLvalid == 0
@@ -46,7 +46,7 @@ class UserCollectionHandler(BaseHandler):
                                         self.retjson['code'] = '10842'
                                         self.retjson['contents'] = '点赞成功'
                                     elif type == '10841':
-                                        self.retjson['code'] = '10842'
+                                        self.retjson['code'] = '10843'
                                         self.retjson['contents'] = r'用户已取消赞！'
                         # 没有找到类似点赞记录
                         except Exception, e:

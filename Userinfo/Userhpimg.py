@@ -368,15 +368,15 @@ class Userhpimg(BaseHandler):
             imghandler=UserImgHandler()
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()
-                if userid.Uid == u_id:
+                if int(userid.Uid) == int(u_id):
                     isself = 1
                 else:
                     isself = 0
                 try:
                     pic = self.db.query(UserCollection).filter(UserCollection.UCid == uc_id).one()
-                    retjson['code']='10816'
+                    retjson['code'] = '10816'
                     retjson['isself'] = isself
-                    retjson['contents']= imghandler.UCmodel(pic,u_id)
+                    retjson['contents'] = imghandler.UCmodel(pic, u_id)
                 except Exception, e:
                     print e
                     retjson['code']='10817'
