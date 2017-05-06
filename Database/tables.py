@@ -319,12 +319,13 @@ class UserCollection(Base):
     UCid = Column(Integer, primary_key=True,nullable=False)
     UCuser = Column(Integer, ForeignKey('User.Uid', onupdate='CASCADE'),nullable=False)
     UCcreateT = Column(DateTime(timezone=True), default=func.now())
-    UCtitle = Column(VARCHAR(32), nullable=False)  #作品集名称
-    UCcontent = Column(VARCHAR(128))               #作品集描述
+    UCtitle = Column(VARCHAR(32), nullable=False)  # 作品集名称
+    UCcontent = Column(VARCHAR(128))               # 作品集描述
     UCvalid = Column(Integer, default=0)
-    UCiscollection = Column(Integer, default=0) #0是作品集 1是动态
+    UCiscollection = Column(Integer, default=0) # 0是作品集 1是动态
     UClikeNum = Column(Integer, default=0)
     UCcommentNum = Column(Integer, default=0)
+
 
 class UserCollectionimg(Base):
     __tablename__ = 'UserCollectionimg'
@@ -334,6 +335,7 @@ class UserCollectionimg(Base):
     UCIvalid = Column(Integer, nullable=False, default=0)
     UCIheight = Column(Integer, default=0)
     UCIwidth = Column(Integer, default=0)
+
 
 class UClike(Base):
     __tablename__ = 'UClike'

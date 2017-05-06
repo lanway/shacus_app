@@ -125,10 +125,10 @@ class Userhpimg(BaseHandler):
             authkey = self.get_argument('authkey')
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == authkey).one()
-                if userid.Uid == uhuser:
-                    isself = 1
-                else:
+                if int(userid.Uid) == int(uhuser):
                     isself = 0
+                else:
+                    isself = 1
                 img= UserImgHandler()
                 piclist = img.UHpicget(uhuser)
                 piclist02 = img.UHpicgetassign(uhuser)
@@ -210,8 +210,8 @@ class Userhpimg(BaseHandler):
                 print '更新完成'
                 try:
                     imghandler = UserImgHandler()
-                    uc_images_json=json.loads(uc_imgs)
-                    imghandler.insert_UserCollection_image(uc_images_json,uc_id)
+                    uc_images_json = json.loads(uc_imgs)
+                    imghandler.insert_UserCollection_image(uc_images_json, uc_id)
                     self.db.commit()
                     retjson['code'] = '10806'
                     retjson['contents'] = '修改/发布作品集成功'
@@ -338,10 +338,10 @@ class Userhpimg(BaseHandler):
             auth_key = self.get_argument("authkey")
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()
-                if userid.Uid == u_id:
-                    isself = 1
-                else:
+                if int(userid.Uid) == int(u_id):
                     isself = 0
+                else:
+                    isself = 1
                 retjson['isself'] = isself
                 imghandler = UserImgHandler()
                 retdata = []
@@ -368,12 +368,12 @@ class Userhpimg(BaseHandler):
             imghandler=UserImgHandler()
             try:
                 userid = self.db.query(User).filter(User.Uauthkey == auth_key).one()
-                if int(userid.Uid) == int(u_id):
-                    isself = 1
-                else:
-                    isself = 0
                 try:
                     pic = self.db.query(UserCollection).filter(UserCollection.UCid == uc_id).one()
+                    if int(pic.UCuser) == int(u_id):
+                        isself = 0
+                    else:
+                        isself = 1
                     retjson['code'] = '10816'
                     retjson['isself'] = isself
                     retjson['contents'] = imghandler.UCmodel(pic, u_id)
