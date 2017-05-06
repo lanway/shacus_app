@@ -376,7 +376,7 @@ class Userhpimg(BaseHandler):
                         isself = 1
                     retjson['code'] = '10816'
                     retjson['isself'] = isself
-                    retjson['contents'] = imghandler.UCmodel(pic, u_id)
+                    retjson['contents'] = imghandler.UCmodel(pic, u_id, userid.Uid)
                 except Exception, e:
                     print e
                     retjson['code']='10817'

@@ -186,7 +186,7 @@ class UserImgHandler(object):
         return img_tokens
 
     # b->c作品集详细信息(包括缩略图url和大图url)   2017-3-28固定不用再改
-    def UCmodel(self, UCsample,uid):  # UCsample是一个UserCollection对象
+    def UCmodel(self, UCsample, uid, userid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         img = []
         imgsimple = []
@@ -224,7 +224,7 @@ class UserImgHandler(object):
             UClikeNum = 0
 
         # 是否已经点赞
-        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == userid, UClike.UClikeid == UCsample.UCid,
                                              UClike.UCLvalid == 1).all()
         if like:
             isliked = 1
