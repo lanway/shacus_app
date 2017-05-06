@@ -97,7 +97,8 @@ class APmodelHandler(object):
                 APcreatetime=appointment.APcreateT.strftime("%Y-%m-%d %H:%M:%S"),
                 Usex=user_sex,
                 APcontent=appointment.APcontent,
-                APgroup=appointment.APgroup
+                APgroup=appointment.APgroup,
+                sponsorid=int(user_id),
                 )
         return ret_ap
 
@@ -175,8 +176,9 @@ class APmodelHandler(object):
                 Usex=user_sex,
                 Useregistd=registed,
                 Usercommented=commented,
+                sponsorid=int(user_id),
             )
-            if appointment.APstatus == 4: # 状态为4是返回两边的评价
+            if appointment.APstatus == 4:  # 状态为4时返回两边的评价
                 appointmentinfo = get_db().query(AppointmentInfo).filter(AppointmentInfo.AIappoid == appointment.APid).one()
                 user_p_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AIpid)
                 user_m_headimage = Ufuncs.get_user_headimage_intent_from_userid(appointmentinfo.AImid)
