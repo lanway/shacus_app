@@ -46,21 +46,21 @@ class UserIndent(BaseHandler):
                 self.retjson['code'] = '10393'
                 self.retjson['contents'] = ret_contents
 
-            elif type == '10903':    # 查看我的已经完成的约拍活动
+            elif type == '10903':    # 查看我的已经完成的但是没有评价约拍活动
                 ret_activity = self.get_activity(u_id,2)
                 ret_contents['activity'] =ret_activity
-                ret_e_appointment = self.get_e_appointment(u_id, 2)
+                ret_e_appointment = self.get_e_appointment_not_evaluate(u_id)
                 ret_contents['entryappointment'] = ret_e_appointment
-                ret_my_appointment = self.get_my_appointment(u_id, 2)
+                ret_my_appointment = self.get_my_appointment_not_evaluate(u_id)
                 ret_contents['myappointment'] = ret_my_appointment
                 self.retjson['code'] = '10394'
                 self.retjson['contents'] = ret_contents
 
             elif type == '10909':    # 查看我的已经完成评价的约拍 这里没有活动了，因为活动没有状态码4
 
-                ret_e_appointment = self.get_e_appointment(u_id, 4)
+                ret_e_appointment = self.get_e_appointment_evaluate(u_id)
                 ret_contents['entryappointment'] = ret_e_appointment
-                ret_my_appointment = self.get_my_appointment(u_id, 4)
+                ret_my_appointment = self.get_my_appointment_evaluate(u_id)
                 ret_contents['myappointment'] = ret_my_appointment
                 self.retjson['code'] = '10395'
                 self.retjson['contents'] = ret_contents
@@ -357,7 +357,96 @@ class UserIndent(BaseHandler):
                 self.retjson['code'] = '10908'
                 self.retjson['contents'] = '评价成功'
 
+    def get_e_appointment_not_evaluate(self,u_id):     # 获取我的参与的未评价的约拍
+        ret_e_appointment = []
+        ap_e_info = []
+        ap_e_entrys = self.db.query(AppointEntry).filter(AppointEntry.AEregisterID == u_id,
+                                                         AppointEntry.AEvalid == True,
+                                                         AppointEntry.AEchoosed == True).all()
+        for ap_e_entry in ap_e_entrys:
+            try:
+                item = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_e_entry.AEapid).one()
+                if item.AIpid == int(u_id):
+                    if not AppointmentInfo.AIpcomment:
+                        ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_e_entry.AEapid,
+                                                                     ).all()
+                        ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0], u_id))
+                if item.AImid == int(u_id):
+                    if not AppointmentInfo.AImcomment:
+                        ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_e_entry.AEapid,
+                                                                     ).all()
+                        ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0], u_id))
 
+            except Exception, e:
+                print e
+        return ret_e_appointment
 
+    def get_my_appointment_not_evaluate(self,u_id):    # 获取我发布的未评价的约拍
+        ap_my_entrys = []
+        ret_my_appointment = []
+        try:
+            ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,
+                                                             Appointment.APstatus >= 2,
+                                                             Appointment.APstatus <= 3).all()
+        except Exception, e:
+            print e
+        for ap_my_entry in ap_my_entrys:
+            try:
+                item = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_my_entry.APid).one()
+                if item.AIpid == int(u_id):
+                    if not item.AIpcomment:
+                        ret_my_appointment.append(APmodelHandler.ap_Model_simply_one(ap_my_entry, u_id))
+                if item.AImid == int(u_id):
+                    if not item.AImcomment:
+                        ret_my_appointment.append(APmodelHandler.ap_Model_simply_one(ap_my_entry, u_id))
+            except Exception, e:
+                print e
 
+        return ret_my_appointment
 
+    def get_e_appointment_evaluate(self, u_id):   #  获取我参加的的已评价了的约拍
+        ret_e_appointment = []
+        ap_e_info = []
+        ap_e_entrys = self.db.query(AppointEntry).filter(AppointEntry.AEregisterID == u_id,
+                                                         AppointEntry.AEvalid == True,
+                                                         AppointEntry.AEchoosed == True).all()
+        for ap_e_entry in ap_e_entrys:
+            try:
+                item = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_e_entry.AEapid).one()
+                if item.AIpid == int(u_id):
+                    if AppointmentInfo.AIpcomment:
+                        ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_e_entry.AEapid,
+                                                                      ).all()
+                        ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0], u_id))
+                if item.AImid == int(u_id):
+                    if AppointmentInfo.AImcomment:
+                        ap_e_info = self.db.query(Appointment).filter(Appointment.APid == ap_e_entry.AEapid,
+                                                                      ).all()
+                        ret_e_appointment.append(APmodelHandler.ap_Model_simply_one(ap_e_info[0], u_id))
+
+            except Exception, e:
+                print e
+        return ret_e_appointment
+
+    def get_my_appointment_evaluate(self,u_id):    # 获取我发布的已评价的约拍
+        ap_my_entrys = []
+        ret_my_appointment = []
+        try:
+            ap_my_entrys = self.db.query(Appointment).filter(Appointment.APsponsorid == u_id,
+                                                             Appointment.APstatus >= 3,
+                                                             Appointment.APstatus <= 4).all()
+        except Exception, e:
+            print e
+        for ap_my_entry in ap_my_entrys:
+            try:
+                item = self.db.query(AppointmentInfo).filter(AppointmentInfo.AIappoid == ap_my_entry.APid).one()
+                if item.AIpid == int(u_id):
+                    if item.AIpcomment:
+                        ret_my_appointment.append(APmodelHandler.ap_Model_simply_one(ap_my_entry, u_id))
+                if item.AImid == int(u_id):
+                    if item.AImcomment:
+                        ret_my_appointment.append(APmodelHandler.ap_Model_simply_one(ap_my_entry, u_id))
+            except Exception, e:
+                print e
+
+        return ret_my_appointment
