@@ -7,7 +7,7 @@
 from rongcloud import RongCloud
 
 def get_token(uid,nickname):
-    rcloud = RongCloud("x4vkb1qpvxu4k", "EziWuNBddbcfz")
+    rcloud = RongCloud("x4vkb1qpvxu4k", "rYwvnaVeAAYYW8")
     c = rcloud.User.getToken(userId=uid, name=nickname,portraitUri='').result
     return c['token']
 
