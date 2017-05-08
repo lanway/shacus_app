@@ -186,7 +186,7 @@ class UserImgHandler(object):
         return img_tokens
 
     # b->c作品集详细信息(包括缩略图url和大图url)   2017-3-28固定不用再改
-    def UCmodel(self, UCsample,uid):  # UCsample是一个UserCollection对象
+    def UCmodel(self, UCsample, uid, userid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         img = []
         imgsimple = []
@@ -202,8 +202,9 @@ class UserImgHandler(object):
             imgsimple.append(img_info)
 
         UserList = []
-        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).limit(10).all()
-        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid, UClike.UCLvalid == 1).\
+            limit(10).all()
+        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()
         if uclikepeople:
             for item in uclikepeople:
                 newid = item.UClikeUserid
@@ -223,7 +224,7 @@ class UserImgHandler(object):
             UClikeNum = 0
 
         # 是否已经点赞
-        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == userid, UClike.UClikeid == UCsample.UCid,
                                              UClike.UCLvalid == 1).all()
         if like:
             isliked = 1
@@ -373,8 +374,8 @@ class UserImgHandler(object):
             imgsimple.append(img_info)
         # 获取点赞人列表(只发三个) 包括:id 和 头像
         UserList = []
-        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).limit(3).all()
-        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid).all()
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).limit(3).all()
+        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()
         if uclikepeople:
             for item in uclikepeople:
                 newid = item.UClikeUserid

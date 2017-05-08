@@ -19,7 +19,7 @@ class ApCompanionHandler(BaseHandler):
             ApOrc = self.get_argument('orgnazation')
             ApcContent = self.get_argument('content')
             ApcUrl = self.get_argument('companionUrl')
-            Apcimg = self.get_arguments('companionImgs[]', strip=True)
+            Apcimg = self.get_arguments('companionImgs[]')
 
             new_ApCompanion = WApCompanions(
                             WAPCname=ApcTitle,
