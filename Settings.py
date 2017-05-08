@@ -120,7 +120,7 @@ class PaswChange(BaseHandler):
                 auth = AuthKeyHandler()
                 im = ImageHandler()
                 im.change_user_headimage(m_image_json,u_id)
-                self.retjson['contents'] = auth.download_url(m_image_json[0])
+                self.retjson['contents'] = auth.download_assign_url(m_image_json[0], 200, 200)
                 self.retjson['code'] = '66666'
             else:
                 self.retjson['contents'] = '用户授权码不正确'
