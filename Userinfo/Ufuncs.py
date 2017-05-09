@@ -179,9 +179,9 @@ class Ufuncs(object):
                 exist = get_db().query(Image).filter(Image.IMid == user_headimage.UIimid, Image.IMvalid == 1).all()
                 if exist:
                     userimg = user_headimage
-                    break;
+                    break
             ui_url = userimg.UIurl
-            user_intent = authkey_handler.download_url(ui_url)
+            user_intent = authkey_handler.download_assign_url(ui_url, 200, 200)
             #         user_intent = authkey_handler.download_url(ui_url)
             #     else:
             #         user_intent = authkey_handler.download_url("logo1.png")
