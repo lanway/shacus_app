@@ -23,7 +23,7 @@ redis_engine = redis.Redis(connection_pool=pool)
 
 
 #  pool_recycle=10
-engine = create_engine(DB_CONNECT_STRING, echo=False, pool_size=100, max_overflow=300)  # 返回数据库引擎，即连接数据库
+engine = create_engine(DB_CONNECT_STRING, echo=True, pool_size=100, max_overflow=300)  # 返回数据库引擎，即连接数据库
 connection = engine.connect()
 
 Base = declarative_base()  # declarative_base() 创建了一个 BaseModel 类，这个类的子类可以自动与一个表关联。

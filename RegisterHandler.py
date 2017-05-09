@@ -196,7 +196,7 @@ class RegisterHandler(BaseHandler):
                         print e
                         self.db.rollback()
                         self.retjson['code'] = 10009  # Request Timeout
-                        self.retjson['contents'] = u'Some errors when commit to database, please try again'
+                        self.retjson['contents'] = 'Some errors when commit to database, please try again :{}'.format(e)
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
 
     def bannerinit(self):
