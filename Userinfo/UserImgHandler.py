@@ -204,7 +204,7 @@ class UserImgHandler(object):
         UserList = []
         uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid, UClike.UCLvalid == 1).\
             limit(10).all()
-        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()
+        uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid, UClike.UCLvalid == 1).all()
         if uclikepeople:
             for item in uclikepeople:
                 newid = item.UClikeUserid
