@@ -123,8 +123,8 @@ class UserImgHandler(object):
                     UCIimid=imid,
                     UCIurl=picurl,
                     UCIvalid=1,
-                    UCIheight = sizedata['height'],
-                    UCIwidth = sizedata['width'],
+                    UCIheight=sizedata['height'],
+                    UCIwidth=sizedata['width'],
                 )
                 db.merge(new_ucimg)
                 db.commit()
@@ -211,7 +211,7 @@ class UserImgHandler(object):
                 userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
                 UClikeModel = dict(
                     id=newid,
-                    headImage=authkeyhandler.download_url(userimg[0].UIurl)
+                    headImage=authkeyhandler.download_assign_url(userimg[0].UIurl, 200, 200)
                 )
                 UserList.append(UClikeModel)
         else:
@@ -278,7 +278,7 @@ class UserImgHandler(object):
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
                                                          UserCollectionimg.UCIvalid == 1).all()
         if ucimg:
-            coverurl = authkeyhandler.download_assign_url(ucimg[0].UCIurl,200,200)  # 选取第一张作为封面(缩略图)
+            coverurl = authkeyhandler.download_assign_url(ucimg[0].UCIurl, 200, 200)  # 选取第一张作为封面(缩略图)
             img_info = coverurl,
         else:
             img_info = dict(
@@ -331,7 +331,7 @@ class UserImgHandler(object):
                 gender = 1
             elif UserPublishModel.Usex == False:
                 gender = 0
-            userheadimg = authkeyhandler.download_url(userimg.UIurl)   # 用户头像Url
+            userheadimg = authkeyhandler.download_assign_url(userimg.UIurl, 200, 200)   # 用户头像Url
             userpublish = dict(                                        # 发布人的Model
                 headImage=userheadimg,                               # 头像
                 nickName=UserPublishModel.Ualais,                      # 发布的用户名字
@@ -382,7 +382,7 @@ class UserImgHandler(object):
                 userimg = get_db().query(UserImage).filter(UserImage.UIuid == newid).order_by(desc(UserImage.UIimid)).all()
                 UClikeModel = dict(
                     id=newid,
-                    headImage=authkeyhandler.download_url(userimg[0].UIurl)
+                    headImage=authkeyhandler.download_assign_url(userimg[0].UIurl, 200, 200)
                 )
                 UserList.append(UClikeModel)
         else:
