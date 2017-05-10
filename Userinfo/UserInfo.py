@@ -53,7 +53,7 @@ class UserInfo(BaseHandler):  #获取用户自己的ID
 
                 ret_content['uid'] = user.Uid
                 ret_content['ualais']  = user.Ualais
-                ret_content['uheadimage'] = auth.download_url(userimg.UIurl)
+                ret_content['uheadimage'] = auth.download_assign_url(userimg.UIurl, 200, 200)
                 self.retjson['code']  = '10706'
                 self.retjson['contents'] = ret_content
 
