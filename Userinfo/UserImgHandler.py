@@ -309,13 +309,17 @@ class UserImgHandler(object):
     '''
     这是作品集列表中------单条信息的返回 包括发布人的Model 上面的UC_simple_model暂时先不用
     '''
-    def UC_login_model(self, UCsample, uid):  # UCsample是一个UserCollection对象
+    def UC_login_model(self, UCsample, uid, useruid):  # UCsample是一个UserCollection对象
         authkeyhandler = AuthKeyHandler()
         # UserPublishModel:获取作品集发布人的model
         try:
             UserPublishModel = get_db().query(User).filter(User.Uid == uid).one()
+            user_bir = UserPublishModel.Ubirthday.strftime('%Y')  # 获取用户生日（年）
+            now = time.strftime('%Y', time.localtime(time.time()))  # 获取当前年份
+            user_age = int(now) - int(user_bir)  # 用户年龄
         except Exception, e:
             UserPublishModel = ''
+            user_age = 0
             print e
         # 单个作品集中前三张的图片(作为缩略图下载)  和所有图片(计算作品集图片个数)
         ucimg = get_db().query(UserCollectionimg).filter(UserCollectionimg.UCIuser == UCsample.UCid,
@@ -332,17 +336,18 @@ class UserImgHandler(object):
             elif UserPublishModel.Usex == False:
                 gender = 0
             userheadimg = authkeyhandler.download_assign_url(userimg.UIurl, 200, 200)   # 用户头像Url
+
             userpublish = dict(                                        # 发布人的Model
                 headImage=userheadimg,                               # 头像
                 nickName=UserPublishModel.Ualais,                      # 发布的用户名字
                 sex=gender,                                     # 性别
                 id=uid,                                            # 用户id
-                age=UserPublishModel.Uage,                         # 用户年龄
+                age=user_age,                         # 用户年龄
             )
         except Exception, e:
             userpublish = dict(
-                headImage='查找头像失败',
-                sex='查找头像失败',
+                headImage='',
+                sex='',
                 id=uid,
                 age='',
             )
@@ -393,7 +398,7 @@ class UserImgHandler(object):
                 UClikeNum += 1
         else:
             UClikeNum = 0
-        like = get_db().query(UClike).filter(UClike.UClikeUserid == uid, UClike.UClikeid == UCsample.UCid,
+        like = get_db().query(UClike).filter(UClike.UClikeUserid == useruid, UClike.UClikeid == UCsample.UCid,
                                              UClike.UCLvalid == 1).all()
         if like:
             isliked = 1

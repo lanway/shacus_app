@@ -424,7 +424,7 @@ class Userhpimg(BaseHandler):
                                                                           UserCollection.UCvalid == 1).\
                         order_by(desc(UserCollection.UCid)).limit(6).all()
                     for item in UserCollecions:
-                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser, userid.Uid))
                     retjson['code'] = '10830'
                     retjson['contents'] = retdata
                 except Exception, e:
@@ -454,7 +454,7 @@ class Userhpimg(BaseHandler):
                                                                               UserCollection.UCid < lastucid). \
                             order_by(desc(UserCollection.UCid)).limit(6).all()
                         for item in UserCollecions:
-                            retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                            retdata.append(imghandler.UC_login_model(item, item.UCuser, userid.Uid))
                         retjson['code'] = '10832'
                         retjson['contents'] = retdata
                     except Exception, e:
@@ -478,7 +478,7 @@ class Userhpimg(BaseHandler):
                                                                           UserCollection.UCvalid == 1). \
                         order_by(desc(UserCollection.UCid)).limit(6).all()
                     for item in UserCollecions:
-                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser,userid.Uid))
                     retjson['code'] = '10834'
                     retjson['contents'] = retdata
                 except Exception, e:
@@ -503,7 +503,7 @@ class Userhpimg(BaseHandler):
                                                                           UserCollection.UCid < lastucid). \
                         order_by(desc(UserCollection.UCid)).limit(6).all()
                     for item in UserCollecions:
-                        retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                        retdata.append(imghandler.UC_login_model(item, item.UCuser, userid.Uid))
                     retjson['code'] = '10836'
                     retjson['contents'] = retdata
                 except Exception, e:
