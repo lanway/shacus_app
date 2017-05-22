@@ -96,37 +96,70 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
 
     def refresh_group_list(self, type, offset_apid, u_id, group):
         retdata = []
-        try:
-            #attention:因为返回新的
-            appointments = self.db.query(Appointment). \
-                filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                       Appointment.APstatus == 0,or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
-                       Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
-                limit(6).all()
-            if appointments:
-                APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
-                self.retjson['code'] = '10253'  # 刷新成功，返回6个
-                self.retjson['contents'] = retdata
-            else:
-                print appointments.first().APtype
-        except Exception, e:  # 剩余约拍不足6个，返回剩余全部约拍
-            print e
+        if int(group) !=0:
             try:
+                #attention:因为返回新的
                 appointments = self.db.query(Appointment). \
                     filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                           Appointment.APstatus == 0, or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
-                           Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
-                    all()
+                           Appointment.APstatus == 0,or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
+                           Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
+                    limit(6).all()
                 if appointments:
                     APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
-                    self.retjson['code'] = '10263'  # 剩余约拍不足6个，返回剩余全部约拍
+                    self.retjson['code'] = '10253'  # 刷新成功，返回6个
                     self.retjson['contents'] = retdata
                 else:
+                    print appointments.first().APtype
+            except Exception, e:  # 剩余约拍不足6个，返回剩余全部约拍
+                print e
+                try:
+                    appointments = self.db.query(Appointment). \
+                        filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                               Appointment.APstatus == 0, or_(Appointment.APgroup.like("{}%".format(group)),Appointment.APgroup.like("%{}".format(group))),
+                               Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
+                        all()
+                    if appointments:
+                        APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                        self.retjson['code'] = '10263'  # 剩余约拍不足6个，返回剩余全部约拍
+                        self.retjson['contents'] = retdata
+                    else:
+                        self.retjson['code'] = '10262'
+                        self.retjson['contents'] = r"没有更多约拍"
+                except Exception, e:
                     self.retjson['code'] = '10262'
                     self.retjson['contents'] = r"没有更多约拍"
-            except Exception, e:
-                self.retjson['code'] = '10262'
-                self.retjson['contents'] = r"没有更多约拍"
+        else:
+            try:
+                # attention:因为返回新的
+                appointments = self.db.query(Appointment). \
+                    filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                           Appointment.APstatus == 0,
+                           Appointment.APid < offset_apid).from_self().order_by(desc(Appointment.APcreateT)). \
+                    limit(6).all()
+                if appointments:
+                    APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                    self.retjson['code'] = '10253'  # 刷新成功，返回6个
+                    self.retjson['contents'] = retdata
+                else:
+                    print appointments.first().APtype
+            except Exception, e:  # 剩余约拍不足6个，返回剩余全部约拍
+                print e
+                try:
+                    appointments = self.db.query(Appointment). \
+                        filter(Appointment.APtype == type, Appointment.APclosed == 0, Appointment.APvalid == 1,
+                               Appointment.APstatus == 0,
+                               Appointment.APid < offset_apid).order_by(desc(Appointment.APcreateT)). \
+                        all()
+                    if appointments:
+                        APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
+                        self.retjson['code'] = '10263'  # 剩余约拍不足6个，返回剩余全部约拍
+                        self.retjson['contents'] = retdata
+                    else:
+                        self.retjson['code'] = '10262'
+                        self.retjson['contents'] = r"没有更多约拍"
+                except Exception, e:
+                    self.retjson['code'] = '10262'
+                    self.retjson['contents'] = r"没有更多约拍"
 
     def post(self):
         u_auth_key = self.get_argument('authkey')
@@ -140,10 +173,10 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             if request_type == '10231':  # 请求所有设定地点的摄影师发布的约拍中未关闭的6
                 retdata = []
                 try:
-                    if int(ap_group)/10 != 0:
+                    if int(ap_group) == 0:
                         appointments = self.db.query(Appointment). \
                             filter(Appointment.APtype == 1, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                   Appointment.APstatus == 0, Appointment.APgroup == groupid).\
+                                   Appointment.APstatus == 0).\
                             order_by(desc(Appointment.APid)).limit(6).all()
                         APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                         self.retjson['code'] = '10251'
@@ -162,10 +195,10 @@ class APaskHandler(BaseHandler):  # 请求约拍相关信息
             elif request_type == '10235':  # 请求所有设定地点的模特发布的约拍中未关闭的
                 retdata = []
                 try:
-                    if int(ap_group) / 10 != 0:
+                    if int(ap_group) == 0:
                             appointments = self.db.query(Appointment). \
                                 filter(Appointment.APtype == 0, Appointment.APclosed == 0, Appointment.APvalid == 1,
-                                       Appointment.APstatus == 0 , Appointment.APgroup == groupid).\
+                                       Appointment.APstatus == 0,  ).\
                             order_by(desc(Appointment.APid)).limit(6).all()
                             APmodelHandler.ap_Model_simply(appointments, retdata, u_id)
                             self.retjson['code'] = '10252'
