@@ -121,7 +121,7 @@ def rec_user_list(user):
         )
         user_model = dict(
             userpublish=usermodel,
-            headimg=imghandler.download_url(uhead_pic[0].UIurl),      # 用户头像
+            headimg=imghandler.download_url(uhead_pic[-1].UIurl),      # 用户头像
             UcFirstimg=imghandler.download_originpic_url(uc_pic[0].UCIurl),          # 作品集第一张
             Ucimg=piclist,
         )
