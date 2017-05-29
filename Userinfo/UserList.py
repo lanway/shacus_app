@@ -43,8 +43,8 @@ class UserList(BaseHandler):
                                     Users = self.db.query(User).filter(User.Uid == item.UCuser).all()
                                     retdata.append(Usermodel.rec_user_list(Users[0]))
                             #  重复返回作品集(方便客户端测试)
-                            retdata += retdata
-                            retdata += retdata
+                            # retdata += retdata
+                            # retdata += retdata
                             self.retjson['code'] = '10850'
                             self.retjson['contents'] = retdata
                         except Exception, e:
@@ -57,8 +57,8 @@ class UserList(BaseHandler):
                                 Users = self.db.query(User).filter(User.Uid == item.UCuser).all()
                                 retdata.append(Usermodel.rec_user_list(Users[0]))
                         #  重复返回作品集(方便客户端测试)
-                        retdata += retdata
-                        retdata += retdata
+                        # retdata += retdata
+                        # retdata += retdata
 
                         self.retjson['code'] = '10850'
                         self.retjson['contents'] = retdata

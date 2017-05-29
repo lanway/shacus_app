@@ -152,7 +152,7 @@ class LoginHandler(BaseHandler):
                 pic = self.db.query(UserCollection).filter(UserCollection.UCuser == like.ULlikedid,
                                                            UserCollection.UCvalid == 1).all()
                 for item in pic:
-                    retdata.append(imghandler.UC_login_model(item, item.UCuser))
+                    retdata.append(imghandler.UC_login_model(item, item.UCuser, user.Uid))
             # 推荐作品集
             # 约拍类型和id
             data = dict(
