@@ -73,10 +73,10 @@ class Userforgotpw(BaseHandler):
                     self.retjson['code'] = '12007'
                     self.retjson['contents'] = u'修改密码成功'
                 else:
-                    self.retjson['code'] = '12008'
+                    self.retjson['code'] = '12005'
                     self.retjson['contents'] = u'验证码验证失败'
             except:
-                self.retjson['code'] = '12009'
+                self.retjson['code'] = '12006'
                 self.retjson['contents'] = u'该手机号码未发送验证码'
 
         self.write(json.dumps(self.retjson, ensure_ascii=False, indent=2))
