@@ -34,6 +34,7 @@ from RegisterHandler import RegisterHandler
 from Settings import PaswChange
 from TRends.TRendspost import TRendspost
 from TRends.TrendHandler import TrendHandler
+from Userinfo.Userforgotpw import Userforgotpw
 from Userinfo.UserCollectionHandler import UserCollectionHandler
 from Userinfo.UserFavoriteHandler import UserFavorite
 from Userinfo.UserImgHandler import UserImgHandler
@@ -83,6 +84,7 @@ class Application(tornado.web.Application):
              (r"/sysmessage",Sysmessage),
              (r"/recommend/reclist",UserList),
              (r"/companion/getauth", AcAuthHandler),
+             (r"/user/forgotpw",Userforgotpw),
         ]
         tornado.web.Application.__init__(self, handlers)
         self.db = scoped_session(sessionmaker(bind=engine,
