@@ -457,6 +457,7 @@ class UserImgHandler(object):
         reclist = []
         friendlist = []
         list = get_db().query(UserLike).filter(UserLike.ULlikeid == uid, UserLike.ULvalid == 1).all()
+        # list为朋友列表
         for item in list:
             friend = get_db().query(User).filter(User.Uid == item.ULlikedid).one()
             friendlist.append(friend.Uid)
@@ -470,7 +471,16 @@ class UserImgHandler(object):
                     reclist.append(ffriend.Uid)
                 else:
                     continue
+        list2 = []
+        if friendlist == []:
+            list2 = get_db().query(User).all()
+            for item in list2:
+                reclist.append(item)
+        else:
+            list2 = get_db().query(User).filter(~User.Uid.in_(friendlist))
+            for item in list2:
+                reclist.append(item)
         return reclist
 
-# f = UserImgHandler()
-# print f.reclist(116)
+f = UserImgHandler()
+print f.reclist(38)
