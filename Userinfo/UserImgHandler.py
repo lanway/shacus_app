@@ -479,7 +479,7 @@ class UserImgHandler(object):
         else:
             list2 = get_db().query(User).filter(~User.Uid.in_(friendlist))
             for item in list2:
-                reclist.append(item)
+                reclist.append(item.Uid)
         return reclist
 
 f = UserImgHandler()
