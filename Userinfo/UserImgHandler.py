@@ -475,7 +475,7 @@ class UserImgHandler(object):
         if friendlist == []:
             list2 = get_db().query(User).all()
             for item in list2:
-                reclist.append(item)
+                reclist.append(item.Uid)
         else:
             list2 = get_db().query(User).filter(~User.Uid.in_(friendlist))
             for item in list2:
