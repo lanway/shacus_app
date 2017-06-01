@@ -38,7 +38,7 @@ class APgroupHandler(object):
             return 3
         elif groupid == '活动更拍':
             return 4
-        elif groupid == '商业跟拍':
+        elif groupid == '商业拍摄':
             return 5
 
     @staticmethod
@@ -52,7 +52,7 @@ class APgroupHandler(object):
         retdata.append(apdata3)
         apdata4 = {'type': '4', 'name': '活动跟拍', 'description' : 'simple跟拍'}
         retdata.append(apdata4)
-        apdata5 = {'type': '5', 'name': '商业跟拍', 'description' : 'naive专业跟拍'}
+        apdata5 = {'type': '5', 'name': '商业拍摄', 'description' : 'naive专业跟拍'}
         retdata.append(apdata5)
 
         return retdata
