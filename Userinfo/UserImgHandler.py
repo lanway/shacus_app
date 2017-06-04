@@ -379,7 +379,7 @@ class UserImgHandler(object):
             imgsimple.append(img_info)
         # 获取点赞人列表(只发三个) 包括:id 和 头像
         UserList = []
-        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).limit(3).all()
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()  # 2017/6/4
         uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()
         if uclikepeople:
             for item in uclikepeople:
