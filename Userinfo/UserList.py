@@ -26,7 +26,8 @@ class UserList(BaseHandler):
                     self.retjson['contents'] = '请设置您的用户类型:摄影师or模特'
                 else:
                     imghandler = UserImgHandler()
-                    reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
+                    #reclist = imghandler.reclist(userid.Uid)   # 朋友的朋友列表(不包括自己)
+                    reclist = [14, 15, 19, 20, 31, 38, 50, 54, 55, 93, 94, 98, 100, 103, 106]  # 用于测试的朋友的朋友列表
                     if reclist:
                         try:
                             UserRec = self.db.query(User).filter(User.Uid.in_(reclist)).all()
@@ -43,8 +44,8 @@ class UserList(BaseHandler):
                                     Users = self.db.query(User).filter(User.Uid == item.UCuser).all()
                                     retdata.append(Usermodel.rec_user_list(Users[0]))
                             #  重复返回作品集(方便客户端测试)
-                            # retdata += retdata
-                            # retdata += retdata
+                            retdata += retdata
+                            retdata += retdata
                             self.retjson['code'] = '10850'
                             self.retjson['contents'] = retdata
                         except Exception, e:
