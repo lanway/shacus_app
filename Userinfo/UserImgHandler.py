@@ -379,7 +379,7 @@ class UserImgHandler(object):
             imgsimple.append(img_info)
         # 获取点赞人列表(只发三个) 包括:id 和 头像
         UserList = []
-        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).limit(3).all()
+        uclikepeople = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()  # 2017/6/4
         uclikepeoplenum = get_db().query(UClike).filter(UClike.UClikeid == UCsample.UCid,UClike.UCLvalid == 1).all()
         if uclikepeople:
             for item in uclikepeople:
@@ -457,6 +457,7 @@ class UserImgHandler(object):
         reclist = []
         friendlist = []
         list = get_db().query(UserLike).filter(UserLike.ULlikeid == uid, UserLike.ULvalid == 1).all()
+        # list为朋友列表
         for item in list:
             friend = get_db().query(User).filter(User.Uid == item.ULlikedid).one()
             friendlist.append(friend.Uid)
@@ -470,7 +471,16 @@ class UserImgHandler(object):
                     reclist.append(ffriend.Uid)
                 else:
                     continue
+        list2 = []
+        if friendlist == []:
+            list2 = get_db().query(User).all()
+            for item in list2:
+                reclist.append(item.Uid)
+        else:
+            list2 = get_db().query(User).filter(~User.Uid.in_(friendlist))
+            for item in list2:
+                reclist.append(item.Uid)
         return reclist
 
-# f = UserImgHandler()
-# print f.reclist(116)
+f = UserImgHandler()
+print f.reclist(38)
